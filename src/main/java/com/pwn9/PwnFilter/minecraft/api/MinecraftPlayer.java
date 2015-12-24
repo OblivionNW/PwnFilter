@@ -11,6 +11,7 @@
 package com.pwn9.PwnFilter.minecraft.api;
 
 import com.pwn9.PwnFilter.api.MessageAuthor;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 
 import javax.annotation.Nonnull;
@@ -39,6 +40,10 @@ public class MinecraftPlayer implements MessageAuthor {
     public static MinecraftPlayer getInstance(UUID uuid) {
         return new MinecraftPlayer(uuid);
     }
+
+    public Player getPlayer() {
+        return Sponge.getGame().getServer().getPlayer(playerId).get();
+    }
     /**
      * <p>hasPermission.</p>
      *
@@ -47,7 +52,7 @@ public class MinecraftPlayer implements MessageAuthor {
      */
     public boolean hasPermission(String s) {
         try {
-            return MinecraftServer.getAPI().getData(playerId).getPermissionSet().contains(s);
+            return getPlayer().hasPermission(s);
         } catch (Exception e) {
             return false;
         }
@@ -56,7 +61,7 @@ public class MinecraftPlayer implements MessageAuthor {
     @Nonnull
     public String getName() {
         try {
-            return MinecraftServer.getAPI().getData(playerId).getName();
+            return getPlayer().getName();
         } catch (Exception e) {
             return "";
         }

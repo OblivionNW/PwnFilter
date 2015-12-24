@@ -105,7 +105,6 @@ public abstract class BaseListener implements FilterClient,RuleChainListener {
      */
     @Override
     public void ruleChainUpdated(RuleChain ruleChain) {
-        MinecraftServer.getAPI().addCachedPermissions(ruleChain.getPermissionList());
     }
 
 }

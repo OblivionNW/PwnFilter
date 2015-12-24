@@ -17,10 +17,12 @@ import com.pwn9.PwnFilter.api.MessageAuthor;
 import com.pwn9.PwnFilter.minecraft.DeathMessages;
 import com.pwn9.PwnFilter.minecraft.PwnFilterPlugin;
 import com.pwn9.PwnFilter.util.LogManager;
+import net.minecraft.server.*;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Texts;
 
 import javax.annotation.Nonnull;
@@ -48,23 +50,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("UnusedDeclaration")
 public class SpongeAPI implements MinecraftAPI {
 
-    private final LoadingCache<UUID, PlayerData> playerDataMap = CacheBuilder.newBuilder()
-            .maximumSize(100)
-            .expireAfterWrite(10, TimeUnit.SECONDS)
-            .build(
-                    new CacheLoader<UUID, PlayerData>() {
-                        @Override
-                        public PlayerData load(@Nonnull final UUID uuid) {
-                            Callable<PlayerData> cacheTask = () -> dataFetch(uuid);
-                            return safeSpongeAPICall(cacheTask);
-                        }
-                    }
-            );
-
     private final PwnFilterPlugin plugin;
-
-    // Permissions we are interested in caching
-    protected final Set<String> permSet = new HashSet<>();
 
     private SpongeAPI(PwnFilterPlugin p) {
         plugin = p;
@@ -74,13 +60,6 @@ public class SpongeAPI implements MinecraftAPI {
         return new SpongeAPI(plugin);
     }
 
-    @Override
-    public synchronized void reset() {
-        permSet.clear();
-        playerDataMap.invalidateAll();
-    }
-
-
 //    /**
 //     * <p>Getter for the field <code>onlinePlayers</code>.</p>
 //     *
@@ -89,69 +68,6 @@ public class SpongeAPI implements MinecraftAPI {
 //    public Player[] getOnlinePlayers() {
 //        return onlinePlayers.toArray(new Player[onlinePlayers.size()]);
 //    }
-
-
-    /**
-     * <p>addCachedPermission.</p>
-     *
-     * @param permission a {@link java.lang.String} object.
-     */
-    @Override
-    public synchronized void addCachedPermission(String permission) {
-        permSet.add(permission);
-    }
-
-
-    /**
-     * <p>addCachedPermissions.</p>
-     *
-     * @param permissions a {@link java.util.Set} object.
-     */
-    @Override
-    public synchronized void addCachedPermissions(Set<String> permissions) {
-        permSet.addAll(permissions);
-    }
-
-    // NOTE: This is not synchronized, but it is private, so that only the
-    // synchronized methods can call it.
-
-    private Set<String> cachePlayerPermissions(Player p) {
-        return permSet.stream().filter(p::hasPermission).collect(Collectors.toSet());
-    }
-
-    @Nullable
-    public <T> T safeSpongeAPICall(Callable<T> callable) {
-        /*
-        if (Bukkit.isPrimaryThread()) {
-            // We are in the main thread, just execute API calls directly.
-            try {
-                return callable.call();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            // Red Alert, Shields Up.  We are an Async task.  Ask the main
-            // thread to execute these calls, and return the Player data to
-            // cache.
-            Future<T> task = Bukkit.getScheduler().callSyncMethod(plugin, callable);
-            try {
-                // This will block the current thread for up to 3s
-                return task.get(3, TimeUnit.SECONDS);
-            } catch (Exception e) {
-                LogManager.getInstance().debugLow("Bukkit API call timed out (>3s).");
-                return null;
-            }
-
-        }
-        */
-        try {
-            return callable.call();// will prob explode at some point
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        //return null;
-    }
 
     public boolean isPrimaryThread() {
         return Thread.currentThread().getName().equals("Server thread");
@@ -173,29 +89,10 @@ public class SpongeAPI implements MinecraftAPI {
         }
     }
 
-
-    private PlayerData dataFetch(UUID uuid) {
-        PlayerData cache = new PlayerData();
-        Optional<Player> p = Sponge.getGame().getServer().getPlayer(uuid);
-        if (!p.isPresent()) return null; // Couldn't find the player!
-        cache.setPermissionSet(cachePlayerPermissions(p.get()));
-        //TODO displaynamedata sponge
-//        cache.setName(p.get().getDisplayNameData().toString());
-        cache.setName(p.get().getName());
-        cache.setWorld(p.get().getLocation().getExtent());
-        return cache;
-    }
-
     @Override
     public MessageAuthor getAuthor(UUID uuid) {
         return MinecraftPlayer.getInstance(uuid);
     }
-
-    @Override
-    public PlayerData getData(UUID uuid) throws ExecutionException {
-        return playerDataMap.get(uuid);
-    }
-
 
     /*
       **********
@@ -297,12 +194,11 @@ public class SpongeAPI implements MinecraftAPI {
 
     @Override
     public String getPlayerWorldName(UUID uuid) {
-        try {
-            return getData(uuid).getWorld().getName();
-        } catch (ExecutionException e) {
-            return null;
+        Optional<Player> player = Sponge.getGame().getServer().getPlayer(uuid);
+        if(player.isPresent()) {
+            return player.get().getLocation().getExtent().getUniqueId().toString();
         }
-
+        return null;
     }
 
     /*

@@ -214,8 +214,6 @@ public class PwnFilterPlugin {
      */
     public void configurePlugin() {
 
-        MinecraftServer.getAPI().reset();
-
         try {
             SpongeConfig.loadConfiguration(configManager, dataFolder);
         } catch (RuntimeException ex) {
@@ -224,10 +222,6 @@ public class PwnFilterPlugin {
             //TODO sponge
             // getPluginLoader().disablePlugin(this);
         }
-
-        // Whenever we reset the API, we need to make sure the plugin permissions
-        // get re-loaded into the cache.
-        MinecraftServer.getAPI().addCachedPermissions(SpongeConfig.getPermissions());
 
     }
 

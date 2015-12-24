@@ -24,25 +24,8 @@ import java.util.concurrent.ExecutionException;
  * Created by ptoal on 15-09-11.
  */
 public interface MinecraftAPI {
-    void reset();
-
-    /**
-     * <p>addCachedPermission.</p>
-     *
-     * @param permission a {@link String} object.
-     */
-    void addCachedPermission(String permission);
-
-    /**
-     * <p>addCachedPermissions.</p>
-     *
-     * @param permissions a {@link java.util.Set} object.
-     */
-    void addCachedPermissions(Set<String> permissions);
 
     MessageAuthor getAuthor(UUID uuid);
-
-    PlayerData getData(UUID uuid) throws ExecutionException;
 
     boolean burn(UUID uuid, final int duration, final String messageString);
 

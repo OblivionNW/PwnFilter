@@ -128,7 +128,7 @@ public class PwnFilterSignListener extends BaseListener implements EventListener
                     newTexts.add(Texts.of(""));
                 }
             }
-            event.getTargetTile().offer(Keys.SIGN_LINES, newTexts);
+            event.getText().set(Keys.SIGN_LINES, newTexts);
         }
 
         if (filterTask.isCancelled()) {
