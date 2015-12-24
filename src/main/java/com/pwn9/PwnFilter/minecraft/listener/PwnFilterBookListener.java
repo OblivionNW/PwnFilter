@@ -11,27 +11,6 @@
 
 package com.pwn9.PwnFilter.minecraft.listener;
 
-import com.pwn9.PwnFilter.FilterTask;
-import com.pwn9.PwnFilter.minecraft.api.MinecraftPlayer;
-import com.pwn9.PwnFilter.minecraft.PwnFilterPlugin;
-import com.pwn9.PwnFilter.minecraft.api.MinecraftServer;
-import com.pwn9.PwnFilter.minecraft.util.ColoredString;
-import com.pwn9.PwnFilter.config.BukkitConfig;
-import com.pwn9.PwnFilter.rules.RuleManager;
-import com.pwn9.PwnFilter.util.LogManager;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerEditBookEvent;
-import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.plugin.EventExecutor;
-import org.bukkit.plugin.PluginManager;
-
-import java.util.ArrayList;
-import java.util.List;
-
 
 /**
  * Listen for Book Change events and apply the filter to the text.
@@ -61,6 +40,8 @@ public class PwnFilterBookListener extends BaseListener {
      *
      * @param event a {@link org.bukkit.event.player.PlayerEditBookEvent} object.
      */
+    //Not possible in sponge atm
+    /*
     public void onBookEdit(PlayerEditBookEvent event) {
         Player player;
         String message;
@@ -110,7 +91,7 @@ public class PwnFilterBookListener extends BaseListener {
             }
         }
 
-    }
+    }*/
 
 
     /**
@@ -126,14 +107,14 @@ public class PwnFilterBookListener extends BaseListener {
     @Override
     public void activate() {
         if (isActive()) return;
-
+/*
         setRuleChain(RuleManager.getInstance().getRuleChain("book.txt"));
 
 
         PluginManager pm = Bukkit.getPluginManager();
-        EventPriority priority = BukkitConfig.getBookpriority();
+        EventPriority priority = SpongeConfig.getBookpriority();
 
-        if (!active && BukkitConfig.bookfilterEnabled()  ) {
+        if (!active && SpongeConfig.bookfilterEnabled()  ) {
             // Now register the listener with the appropriate priority
             pm.registerEvent(PlayerEditBookEvent.class, this, priority,
                     new EventExecutor() {
@@ -145,6 +126,7 @@ public class PwnFilterBookListener extends BaseListener {
                     + " Rule Count: " + getRuleChain().ruleCount() );
 
         }
+        */
     }
 }
 

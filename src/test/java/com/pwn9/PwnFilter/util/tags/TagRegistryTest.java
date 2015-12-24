@@ -14,11 +14,11 @@ import com.pwn9.PwnFilter.FilterTask;
 import com.pwn9.PwnFilter.api.FilterClient;
 import com.pwn9.PwnFilter.api.MessageAuthor;
 import com.pwn9.PwnFilter.rules.RuleChain;
-import junit.framework.Assert;
-import org.jetbrains.annotations.NotNull;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,13 +41,13 @@ public class TagRegistryTest {
                 return false;
             }
 
-            @NotNull
+            @Nonnull
             @Override
             public String getName() {
                 return "";
             }
 
-            @NotNull
+            @Nonnull
             @Override
             public UUID getID() {
                 return testId;

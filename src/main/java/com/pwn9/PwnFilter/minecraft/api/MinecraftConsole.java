@@ -11,8 +11,8 @@
 package com.pwn9.PwnFilter.minecraft.api;
 
 import com.pwn9.PwnFilter.api.MessageAuthor;
-import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,13 +34,13 @@ public class MinecraftConsole implements MessageAuthor {
         return true;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getName() {
         return "CONSOLE";
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public UUID getID() {
         return UUID.fromString("CONSOLE");

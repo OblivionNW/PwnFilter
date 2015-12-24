@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import java.util.regex.Pattern;
 
-import static junit.framework.Assert.assertEquals;
+import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
 

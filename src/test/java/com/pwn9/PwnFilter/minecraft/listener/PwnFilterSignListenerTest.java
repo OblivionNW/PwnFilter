@@ -11,7 +11,7 @@
 package com.pwn9.PwnFilter.minecraft.listener;
 
 import com.pwn9.PwnFilter.TestMinecraftAPI;
-import com.pwn9.PwnFilter.config.BukkitConfig;
+import com.pwn9.PwnFilter.config.SpongeConfig;
 import com.pwn9.PwnFilter.config.FilterConfig;
 import com.pwn9.PwnFilter.minecraft.api.MinecraftAPI;
 import com.pwn9.PwnFilter.minecraft.api.MinecraftServer;
@@ -66,9 +66,9 @@ public class PwnFilterSignListenerTest {
         File rulesDir = new File(getClass().getResource("/rules").getFile());
         FilterConfig.getInstance().setRulesDir(rulesDir);
         testConfig = YamlConfiguration.loadConfiguration(new File(getClass().getResource("/config.yml").getFile()));
-        BukkitConfig.loadConfiguration(testConfig, resourcesDir);
+        SpongeConfig.loadConfiguration(testConfig, resourcesDir);
         MinecraftServer.setAPI(minecraftAPI);
-        BukkitConfig.setGlobalMute(false); // To ensure it gets reset between tests.
+        SpongeConfig.setGlobalMute(false); // To ensure it gets reset between tests.
     }
 
     @Test

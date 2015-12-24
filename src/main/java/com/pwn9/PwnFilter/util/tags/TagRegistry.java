@@ -11,8 +11,8 @@
 package com.pwn9.PwnFilter.util.tags;
 
 import com.pwn9.PwnFilter.FilterTask;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

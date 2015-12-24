@@ -11,8 +11,8 @@
 package com.pwn9.PwnFilter.minecraft.util;
 
 import com.pwn9.PwnFilter.util.EnhancedString;
-import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -132,7 +132,7 @@ public final class ColoredString implements EnhancedString {
 
     /** {@inheritDoc} */
     @Override
-    @NotNull
+    @Nonnull
     public String toString() {
         return new String(plain);
     }

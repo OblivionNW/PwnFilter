@@ -10,7 +10,7 @@
 
 package com.pwn9.PwnFilter.util;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * Create a Timed Regex match.
@@ -91,7 +91,7 @@ public class LimitedRegexCharSequence implements CharSequence {
 
     /** {@inheritDoc} */
     @Override
-    @NotNull
+    @Nonnull
     public String toString() {
         return inner.toString();
     }

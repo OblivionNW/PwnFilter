@@ -147,7 +147,7 @@ public class Rule implements ChainEntry {
         // Check if action matches the current state of the message
 
         if (LogManager.debugMode.compareTo(LogManager.DebugModes.high) >= 0) {
-            LogManager.logger.info("Testing Pattern: '" + pattern.toString() + "' on string: '" + filterTask.getModifiedMessage().toString()+"'");
+            LogManager.info("Testing Pattern: '" + pattern.toString() + "' on string: '" + filterTask.getModifiedMessage().toString()+"'");
         }
 
             LimitedRegexCharSequence limitedRegexCharSequence = new LimitedRegexCharSequence(filterTask.getModifiedMessage().toString(),100);
@@ -156,8 +156,8 @@ public class Rule implements ChainEntry {
         try {
             if (!matcher.find()) return;
         } catch (RuntimeException ex) {
-            LogManager.logger.severe("Regex match timed out! Regex: " + pattern.toString());
-            LogManager.logger.severe("Failed string was: " + limitedRegexCharSequence);
+            LogManager.error("Regex match timed out! Regex: " + pattern.toString());
+            LogManager.error("Failed string was: " + limitedRegexCharSequence);
             return;
         }
 

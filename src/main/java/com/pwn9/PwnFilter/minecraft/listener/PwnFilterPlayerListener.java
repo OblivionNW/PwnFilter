@@ -11,19 +11,22 @@
 package com.pwn9.PwnFilter.minecraft.listener;
 
 import com.pwn9.PwnFilter.FilterTask;
+import com.pwn9.PwnFilter.config.SpongeConfig;
+import com.pwn9.PwnFilter.helpers.ChatColor;
 import com.pwn9.PwnFilter.minecraft.PwnFilterPlugin;
 import com.pwn9.PwnFilter.minecraft.api.MinecraftPlayer;
 import com.pwn9.PwnFilter.minecraft.util.ColoredString;
-import com.pwn9.PwnFilter.config.BukkitConfig;
 import com.pwn9.PwnFilter.rules.RuleManager;
 import com.pwn9.PwnFilter.util.LogManager;
 import com.pwn9.PwnFilter.util.SimpleString;
-import org.bukkit.Bukkit;
-import org.bukkit.event.Event;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.plugin.EventExecutor;
-import org.bukkit.plugin.PluginManager;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.EventListener;
+import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.command.MessageSinkEvent;
+import org.spongepowered.api.text.Texts;
+
+import java.util.Optional;
 
 /**
  * Listen for Chat events and apply the filter.
@@ -31,7 +34,7 @@ import org.bukkit.plugin.PluginManager;
  * @author ptoal
  * @version $Id: $Id
  */
-public class PwnFilterPlayerListener extends BaseListener {
+public class PwnFilterPlayerListener extends BaseListener implements EventListener<MessageSinkEvent.Chat> {
 
     /**
      * <p>getShortName.</p>
@@ -51,27 +54,33 @@ public class PwnFilterPlayerListener extends BaseListener {
     /**
      * <p>onPlayerChat.</p>
      *
-     * @param event a {@link org.bukkit.event.player.AsyncPlayerChatEvent} object.
+     * @param event a {@link MessageSinkEvent.Chat} object.
      */
-    public void onPlayerChat(AsyncPlayerChatEvent event) {
+    public void handle(MessageSinkEvent.Chat event) {
 
         if (event.isCancelled()) return;
 
-        MinecraftPlayer bukkitPlayer = MinecraftPlayer.getInstance(event.getPlayer());
+        Optional<Player> playerOptional = event.getCause().first(Player.class);
+        if(!playerOptional.isPresent()) {
+            return;
+        }
+
+
+        MinecraftPlayer bukkitPlayer = MinecraftPlayer.getInstance(playerOptional.get());
 
 
         // Permissions Check, if player has bypass permissions, then skip everything.
         if (bukkitPlayer.hasPermission("pwnfilter.bypass.chat")) return;
 
-        String message = event.getMessage();
+        String message = Texts.legacy().to(event.getMessage());
 
         // Global mute
-        if ((BukkitConfig.isGlobalMute()) && (!bukkitPlayer.hasPermission("pwnfilter.bypass.mute"))) {
+        if ((SpongeConfig.isGlobalMute()) && (!bukkitPlayer.hasPermission("pwnfilter.bypass.mute"))) {
             event.setCancelled(true);
             return; // No point in continuing.
         }
 
-        if (BukkitConfig.spamfilterEnabled() && !bukkitPlayer.hasPermission("pwnfilter.bypass.spam")) {
+        if (SpongeConfig.spamfilterEnabled() && !bukkitPlayer.hasPermission("pwnfilter.bypass.spam")) {
             // Keep a log of the last message sent by this player.  If it's the same as the current message, cancel.
             if (PwnFilterPlugin.lastMessage.containsKey(bukkitPlayer.getID()) && PwnFilterPlugin.lastMessage.get(bukkitPlayer.getID()).equals(message)) {
                 event.setCancelled(true);
@@ -84,7 +93,7 @@ public class PwnFilterPlayerListener extends BaseListener {
         FilterTask state = new FilterTask(new ColoredString(message), bukkitPlayer, this);
 
         // Global decolor
-        if ((BukkitConfig.decolor()) && !(bukkitPlayer.hasPermission("pwnfilter.color"))) {
+        if ((SpongeConfig.decolor()) && !(bukkitPlayer.hasPermission("pwnfilter.color"))) {
             // We are changing the state of the message.  Let's do that before any rules processing.
             state.setModifiedMessage(new SimpleString(state.getModifiedMessage().toString()));
         }
@@ -95,7 +104,7 @@ public class PwnFilterPlayerListener extends BaseListener {
 
         // Only update the message if it has been changed.
         if (state.messageChanged()){
-            event.setMessage(state.getModifiedMessage().getRaw());
+            event.setMessage(Texts.of(ChatColor.translateAlternateColorCodes(state.getModifiedMessage().getRaw())));
         }
         if (state.isCancelled()) event.setCancelled(true);
     }
@@ -117,19 +126,11 @@ public class PwnFilterPlayerListener extends BaseListener {
 
         setRuleChain(RuleManager.getInstance().getRuleChain("chat.txt"));
 
-        PluginManager pm = Bukkit.getServer().getPluginManager();
-
         /* Hook up the Listener for PlayerChat events */
-        pm.registerEvent(AsyncPlayerChatEvent.class, this, BukkitConfig.getChatpriority(),
-                new EventExecutor() {
-                    public void execute(Listener l, Event e) {
-                        onPlayerChat((AsyncPlayerChatEvent) e);
-                    }
-                }, PwnFilterPlugin.getInstance());
-
-        LogManager.logger.info("Activated PlayerListener with Priority Setting: " + BukkitConfig.getChatpriority().toString()
+        Order chatPriority = SpongeConfig.getChatpriority();
+        Sponge.getGame().getEventManager().registerListener(PwnFilterPlugin.getInstance(), MessageSinkEvent.Chat.class, chatPriority, this);
+        LogManager.info("Activated PlayerListener with Priority Setting: " + SpongeConfig.getChatpriority().toString()
                 + " Rule Count: " + getRuleChain().ruleCount() );
-
         setActive();
 
     }

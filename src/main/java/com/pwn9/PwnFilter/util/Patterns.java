@@ -35,11 +35,11 @@ public class Patterns {
             return pattern;
         }
         catch (PatternSyntaxException e) {
-            LogManager.logger.warning("Failed to compile regex: " + re);
-            LogManager.logger.warning(e.getMessage());
+            LogManager.warn("Failed to compile regex: " + re);
+            LogManager.warn(e.getMessage());
         }
         catch (Exception e) {
-            LogManager.logger.severe("Unexpected error while compiling expression '" + re + "'");
+            LogManager.error("Unexpected error while compiling expression '" + re + "'");
             e.printStackTrace();
         }
         return pattern;

@@ -2,9 +2,10 @@ package com.pwn9.PwnFilter.minecraft.util;
 
 import com.pwn9.PwnFilter.minecraft.PwnFilterPlugin;
 import com.pwn9.PwnFilter.util.LogManager;
-import org.bukkit.plugin.Plugin;
+import org.spongepowered.api.Sponge;
 
 import java.io.*;
+import java.net.URL;
 
 /**
  * Helpers for File Handling
@@ -35,23 +36,23 @@ public class FileUtil {
             } else {
                 if (createFile) {
                     if (!ruleFile.getParentFile().exists() && !ruleFile.getParentFile().mkdirs()) {
-                        LogManager.logger.warning("Unable to create directory for:" + fileName);
+                        LogManager.warn("Unable to create directory for:" + fileName);
                         return null;
                     }
                     if (copyTemplate(ruleFile, fileName)) {
                         return ruleFile;
                     } else {
-                        LogManager.logger.warning("Unable to find or create file:" + fileName);
+                        LogManager.warn("Unable to find or create file:" + fileName);
                         return null;
                     }
                 }
             }
 
         } catch (IOException ex) {
-            LogManager.logger.warning("Unable to find or create file:" + fileName);
+            LogManager.warn("Unable to find or create file:" + fileName);
             LogManager.getInstance().debugLow(ex.getMessage());
         } catch (SecurityException ex) {
-            LogManager.logger.warning("Insufficient Privileges to create file: " + fileName);
+            LogManager.warn("Insufficient Privileges to create file: " + fileName);
             LogManager.getInstance().debugLow(ex.getMessage());
         }
         return null;
@@ -67,15 +68,7 @@ public class FileUtil {
      * @throws java.lang.SecurityException if any.
      */
     public static boolean copyTemplate(File destFile, String configName) throws IOException, SecurityException {
-        Plugin plugin = PwnFilterPlugin.getInstance();
-
-        InputStream templateFile;
-
-        templateFile = plugin.getResource(configName);
-        if (templateFile == null) {
-            // Create an empty file.
-            return destFile.mkdirs() && destFile.createNewFile();
-        }
+        InputStream templateFile = PwnFilterPlugin.class.getResourceAsStream(configName);
         if (destFile.createNewFile()) {
             BufferedInputStream fin = new BufferedInputStream(templateFile);
             FileOutputStream fout = new FileOutputStream(destFile);
@@ -85,10 +78,10 @@ public class FileUtil {
                 fout.write(data, 0, c);
             fin.close();
             fout.close();
-            LogManager.logger.info("Created file from template: " + configName);
+            LogManager.info("Created file from template: " + configName);
             return true;
         } else {
-            LogManager.logger.warning("Failed to create file from template: " + configName);
+            LogManager.warn("Failed to create file from template: " + configName);
             return false;
         }
     }

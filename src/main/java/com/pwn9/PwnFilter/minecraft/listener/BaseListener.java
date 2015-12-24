@@ -15,8 +15,7 @@ import com.pwn9.PwnFilter.api.FilterClient;
 import com.pwn9.PwnFilter.minecraft.api.MinecraftServer;
 import com.pwn9.PwnFilter.rules.RuleChain;
 import com.pwn9.PwnFilter.rules.RuleChainListener;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
+import org.spongepowered.api.Sponge;
 
 /**
  * User: ptoal
@@ -26,7 +25,7 @@ import org.bukkit.event.Listener;
  * @author ptoal
  * @version $Id: $Id
  */
-public abstract class BaseListener implements FilterClient,RuleChainListener, Listener {
+public abstract class BaseListener implements FilterClient,RuleChainListener {
     boolean active;
     RuleChain ruleChain;
 
@@ -93,7 +92,7 @@ public abstract class BaseListener implements FilterClient,RuleChainListener, Li
     @Override
     public void shutdown() {
         if (active) {
-            HandlerList.unregisterAll(this);
+            Sponge.getGame().getEventManager().unregisterListeners(this);
             setInactive();
             clearRuleChain();
         }

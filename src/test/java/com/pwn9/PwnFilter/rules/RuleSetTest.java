@@ -7,8 +7,7 @@ import com.pwn9.PwnFilter.config.FilterConfig;
 import com.pwn9.PwnFilter.minecraft.PwnFilterPlugin;
 import com.pwn9.PwnFilter.rules.action.RegisterActions;
 import com.pwn9.PwnFilter.util.LogManager;
-import junit.framework.Assert;
-import org.jetbrains.annotations.NotNull;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +20,8 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
+
+import javax.annotation.Nonnull;
 
 /**
  * Tests for RuleSets
@@ -48,13 +49,13 @@ public class RuleSetTest {
             return false;
         }
 
-        @NotNull
+        @Nonnull
         @Override
         public String getName() {
             return "";
         }
 
-        @NotNull
+        @Nonnull
         @Override
         public UUID getID() {
             return UUID.randomUUID();

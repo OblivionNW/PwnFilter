@@ -11,8 +11,8 @@
 package com.pwn9.PwnFilter.rules.action.core;
 
 import com.pwn9.PwnFilter.FilterTask;
+import com.pwn9.PwnFilter.helpers.ChatColor;
 import com.pwn9.PwnFilter.rules.action.Action;
-import org.bukkit.ChatColor;
 
 /**
  * Rewrite the string by replacing the matched text with the provided string.

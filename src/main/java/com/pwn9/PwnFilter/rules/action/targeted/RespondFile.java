@@ -12,11 +12,11 @@ package com.pwn9.PwnFilter.rules.action.targeted;
 
 import com.pwn9.PwnFilter.FilterTask;
 import com.pwn9.PwnFilter.config.FilterConfig;
+import com.pwn9.PwnFilter.helpers.ChatColor;
 import com.pwn9.PwnFilter.minecraft.util.FileUtil;
 import com.pwn9.PwnFilter.rules.action.Action;
 import com.pwn9.PwnFilter.util.LogManager;
 import com.pwn9.PwnFilter.util.tags.TagRegistry;
-import org.bukkit.ChatColor;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -44,10 +44,10 @@ public class RespondFile implements Action {
                 messageStrings.add(ChatColor.translateAlternateColorCodes('&', message));
             }
         } catch (FileNotFoundException ex) {
-            LogManager.logger.warning("File not found while trying to add Action: " + ex.getMessage());
+            LogManager.warn("File not found while trying to add Action: " + ex.getMessage());
             messageStrings.add("[PwnFilter] Configuration error: file not found.");
         } catch (IOException ex) {
-            LogManager.logger.warning("Error reading file: " + s);
+            LogManager.warn("Error reading file: " + s);
             messageStrings.add("[PwnFilter] Error: respondfile IO.  Please notify admins.");
         }
     }

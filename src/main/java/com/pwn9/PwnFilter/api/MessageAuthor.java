@@ -10,8 +10,7 @@
 
 package com.pwn9.PwnFilter.api;
 
-import org.jetbrains.annotations.NotNull;
-
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,10 +24,10 @@ public interface MessageAuthor {
 
     boolean hasPermission(String permString);
 
-    @NotNull
+    @Nonnull
     String getName();
 
-    @NotNull
+    @Nonnull
     UUID getID();
 
     void sendMessage(String message);

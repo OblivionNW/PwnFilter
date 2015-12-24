@@ -12,12 +12,11 @@
 package com.pwn9.PwnFilter.minecraft.listener;
 
 import com.pwn9.PwnFilter.minecraft.DeathMessages;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.entity.DestructEntityEvent;
+import org.spongepowered.api.text.Texts;
 
 /**
  * Catch Death events to rewrite them with a custom message.
@@ -25,23 +24,23 @@ import org.bukkit.event.entity.PlayerDeathEvent;
  * @author ptoal
  * @version $Id: $Id
  */
-public class PwnFilterEntityListener implements Listener {
+public class PwnFilterEntityListener {
 
     /**
      * <p>onEntityDeath.</p>
      *
-     * @param event a {@link org.bukkit.event.entity.EntityDeathEvent} object.
+     * @param event a {@link DestructEntityEvent.Death} object.
      */
-    @EventHandler(priority=EventPriority.LOWEST)
-    public void onEntityDeath(EntityDeathEvent event) {
-        if (!(event instanceof PlayerDeathEvent)) return;
+    @Listener(order= Order.LAST)
+    public void onEntityDeath(DestructEntityEvent.Death event) {
+        if(!(event.getTargetEntity() instanceof Player)) {
+            return;
+        }
 
-        PlayerDeathEvent e = (PlayerDeathEvent)event;
-
-        final Player player = (Player)event.getEntity();
+        final Player player = (Player)event.getTargetEntity();
 
         if (DeathMessages.killedPlayers.containsKey(player.getUniqueId())) {
-            e.setDeathMessage(DeathMessages.killedPlayers.remove(player.getUniqueId()));
+            event.setMessage(Texts.of(DeathMessages.killedPlayers.remove(player.getUniqueId())));
         }
 
     }

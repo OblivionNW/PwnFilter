@@ -11,9 +11,9 @@
 package com.pwn9.PwnFilter.rules.action.core;
 
 import com.pwn9.PwnFilter.FilterTask;
+import com.pwn9.PwnFilter.helpers.ChatColor;
 import com.pwn9.PwnFilter.rules.action.Action;
 import com.pwn9.PwnFilter.util.SimpleString;
-import org.bukkit.ChatColor;
 
 /**
  * Decolor the whole string and replace the matched text with the replacement string.

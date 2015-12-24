@@ -10,7 +10,7 @@
 
 package com.pwn9.PwnFilter.minecraft.api;
 
-import org.bukkit.World;
+import org.spongepowered.api.world.World;
 
 import java.util.HashSet;
 import java.util.Set;

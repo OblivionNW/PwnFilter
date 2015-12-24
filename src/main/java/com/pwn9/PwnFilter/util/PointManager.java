@@ -15,8 +15,8 @@ import com.pwn9.PwnFilter.api.FilterClient;
 import com.pwn9.PwnFilter.api.MessageAuthor;
 import com.pwn9.PwnFilter.rules.RuleChain;
 import com.pwn9.PwnFilter.rules.action.Action;
-import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -251,7 +251,7 @@ public class PointManager implements FilterClient {
         }
 
         @Override
-        public int compareTo(@NotNull Threshold o) {
+        public int compareTo(@Nonnull Threshold o) {
             return Double.compare(this.points, o.points);
         }
 

@@ -1,6 +1,6 @@
 package com.pwn9.PwnFilter.util;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.regex.Matcher;

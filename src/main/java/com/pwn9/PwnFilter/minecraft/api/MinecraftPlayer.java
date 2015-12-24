@@ -11,10 +11,9 @@
 package com.pwn9.PwnFilter.minecraft.api;
 
 import com.pwn9.PwnFilter.api.MessageAuthor;
-import org.bukkit.entity.Player;
-import org.bukkit.permissions.Permission;
-import org.jetbrains.annotations.NotNull;
+import org.spongepowered.api.entity.living.player.Player;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,17 +53,7 @@ public class MinecraftPlayer implements MessageAuthor {
         }
     }
 
-    /**
-     * <p>hasPermission.</p>
-     *
-     * @param perm a {@link org.bukkit.permissions.Permission} object.
-     * @return a boolean.
-     */
-    public boolean hasPermission(Permission perm) {
-        return hasPermission(perm.getName());
-    }
-
-    @NotNull
+    @Nonnull
     public String getName() {
         try {
             return MinecraftServer.getAPI().getData(playerId).getName();
@@ -74,7 +63,7 @@ public class MinecraftPlayer implements MessageAuthor {
 
    }
 
-    @NotNull
+    @Nonnull
     public UUID getID() {
         return playerId;
     }

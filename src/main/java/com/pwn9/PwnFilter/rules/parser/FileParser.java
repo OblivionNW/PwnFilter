@@ -121,13 +121,13 @@ public class FileParser {
         // Open the file for reading.
         File ruleFile = FileUtil.getFile(FilterConfig.getInstance().getRulesDir(), filename, createFile);
         if(ruleFile == null) {
-            LogManager.logger.warning("File not found: " + filename + ". Aborting parsing.");
+            LogManager.warn("File not found: " + filename + ". Aborting parsing.");
             return false;
         }
         try {
             reader = new RuleStreamReader(new FileReader(ruleFile));
         } catch (FileNotFoundException ex) {
-            LogManager.logger.warning("File not found: " + filename + ". Aborting parsing.");
+            LogManager.warn("File not found: " + filename + ". Aborting parsing.");
             return false;
         }
 
@@ -186,7 +186,7 @@ public class FileParser {
             reader.close();
 
         } catch (IOException e) {
-            LogManager.logger.severe("IO Exception during processing: " + e.getMessage());
+            LogManager.error("IO Exception during processing: " + e.getMessage());
             return false;
         }
         return !chain.isEmpty();
@@ -370,7 +370,7 @@ public class FileParser {
      * @param error A String containing the error message.
      */
     private void parserError(int line, String error) {
-        LogManager.logger.warning(String.format("Parser Error (%s:%d) %s",filename,line,error));
+        LogManager.warn(String.format("Parser Error (%s:%d) %s",filename,line,error));
     }
 
     /* Exceptions */

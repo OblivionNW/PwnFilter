@@ -1,12 +1,13 @@
 package com.pwn9.PwnFilter.rules;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import com.pwn9.PwnFilter.FilterTask;
 import com.pwn9.PwnFilter.api.FilterClient;
 import com.pwn9.PwnFilter.api.MessageAuthor;
 import com.pwn9.PwnFilter.config.FilterConfig;
 import com.pwn9.PwnFilter.rules.action.RegisterActions;
 import com.pwn9.PwnFilter.util.LogManager;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,8 +16,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
+import javax.annotation.Nonnull;
 
 /**
  * Tests for Actions
@@ -43,13 +43,13 @@ public class ActionTest {
             return false;
         }
 
-        @NotNull
+        @Nonnull
         @Override
         public String getName() {
             return "";
         }
 
-        @NotNull
+        @Nonnull
         @Override
         public UUID getID() {
             return UUID.randomUUID();

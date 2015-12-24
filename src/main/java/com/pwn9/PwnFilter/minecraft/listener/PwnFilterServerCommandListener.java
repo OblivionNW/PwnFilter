@@ -11,19 +11,16 @@
 package com.pwn9.PwnFilter.minecraft.listener;
 
 import com.pwn9.PwnFilter.FilterTask;
+import com.pwn9.PwnFilter.config.SpongeConfig;
 import com.pwn9.PwnFilter.minecraft.PwnFilterPlugin;
 import com.pwn9.PwnFilter.minecraft.api.MinecraftConsole;
 import com.pwn9.PwnFilter.minecraft.util.ColoredString;
-import com.pwn9.PwnFilter.config.BukkitConfig;
 import com.pwn9.PwnFilter.rules.RuleManager;
 import com.pwn9.PwnFilter.util.LogManager;
-import org.bukkit.Bukkit;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.server.ServerCommandEvent;
-import org.bukkit.plugin.EventExecutor;
-import org.bukkit.plugin.PluginManager;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.event.EventListener;
+import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.command.SendCommandEvent;
 
 /**
  * Apply the filter to commands.
@@ -31,7 +28,7 @@ import org.bukkit.plugin.PluginManager;
  * @author ptoal
  * @version $Id: $Id
  */
-public class PwnFilterServerCommandListener extends BaseListener {
+public class PwnFilterServerCommandListener extends BaseListener implements EventListener<SendCommandEvent> {
 
     /**
      * <p>Constructor for PwnFilterServerCommandListener.</p>
@@ -50,22 +47,20 @@ public class PwnFilterServerCommandListener extends BaseListener {
     /**
      * <p>onServerCommandEvent.</p>
      *
-     * @param event a {@link org.bukkit.event.server.ServerCommandEvent} object.
+     * @param event a {@link SendCommandEvent} object.
      */
-    public void onServerCommandEvent(ServerCommandEvent event) {
-
-        String command = event.getCommand();
-
-        //Gets the actual command as a string
-        String cmdmessage;
-        try {
-            cmdmessage = command.split(" ")[0];
-        } catch (IndexOutOfBoundsException ex) {
+    public void handle(SendCommandEvent event) {
+        if(!event.getCause().contains(Sponge.getGame().getServer().getConsole())) {
             return;
         }
 
-        if (!BukkitConfig.getCmdlist().isEmpty() && !BukkitConfig.getCmdlist().contains(cmdmessage)) return;
-        if (BukkitConfig.getCmdblist().contains(cmdmessage)) return;
+        String command = event.getCommand()+" "+event.getArguments();
+
+        //Gets the actual command as a string
+        String cmdmessage = event.getCommand();
+
+        if (!SpongeConfig.getCmdlist().isEmpty() && !SpongeConfig.getCmdlist().contains(cmdmessage)) return;
+        if (SpongeConfig.getCmdblist().contains(cmdmessage)) return;
 
         FilterTask state = new FilterTask(new ColoredString(command), MinecraftConsole.getInstance(), this);
 
@@ -75,10 +70,10 @@ public class PwnFilterServerCommandListener extends BaseListener {
 
         // Only update the message if it has been changed.
         if (state.messageChanged()){
-            event.setCommand(state.getModifiedMessage().getRaw());
+            Sponge.getGame().getCommandManager().process(Sponge.getGame().getServer().getConsole(), state.getModifiedMessage().getRaw());
         }
 
-        if (state.isCancelled()) event.setCommand("");
+        if (state.isCancelled()) event.setCancelled(true);
 
     }
 
@@ -98,19 +93,11 @@ public class PwnFilterServerCommandListener extends BaseListener {
 
         setRuleChain(RuleManager.getInstance().getRuleChain("console.txt"));
 
-        if (BukkitConfig.consolefilterEnabled()) {
-
-            PluginManager pm = Bukkit.getPluginManager();
-            EventPriority priority = BukkitConfig.getCmdpriority();
-
-            pm.registerEvent(ServerCommandEvent.class, this, priority,
-                    new EventExecutor() {
-                        public void execute(Listener l, Event e) { onServerCommandEvent((ServerCommandEvent) e); }
-                    },
-                    PwnFilterPlugin.getInstance());
-            LogManager.logger.info("Activated ServerCommandListener with Priority Setting: " + priority.toString()
+        if (SpongeConfig.consolefilterEnabled()) {
+            Order priority = SpongeConfig.getCmdpriority();
+            Sponge.getGame().getEventManager().registerListener(PwnFilterPlugin.getInstance(), SendCommandEvent.class, priority, this);
+            LogManager.info("Activated ServerCommandListener with Priority Setting: " + priority.toString()
                     + " Rule Count: " + getRuleChain().ruleCount() );
-
             setActive();
         }
     }

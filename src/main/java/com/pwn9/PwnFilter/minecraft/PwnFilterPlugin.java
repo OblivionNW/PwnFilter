@@ -11,26 +11,38 @@
 package com.pwn9.PwnFilter.minecraft;
 
 import com.google.common.collect.MapMaker;
+import com.google.inject.Inject;
 import com.pwn9.PwnFilter.FilterEngine;
 import com.pwn9.PwnFilter.api.FilterClient;
-import com.pwn9.PwnFilter.config.BukkitConfig;
-import com.pwn9.PwnFilter.minecraft.api.BukkitAPI;
+import com.pwn9.PwnFilter.config.SpongeConfig;
+import com.pwn9.PwnFilter.minecraft.api.SpongeAPI;
 import com.pwn9.PwnFilter.minecraft.api.MinecraftAPI;
 import com.pwn9.PwnFilter.minecraft.api.MinecraftServer;
-import com.pwn9.PwnFilter.minecraft.command.pfcls;
-import com.pwn9.PwnFilter.minecraft.command.pfdumpcache;
-import com.pwn9.PwnFilter.minecraft.command.pfmute;
-import com.pwn9.PwnFilter.minecraft.command.pfreload;
-import com.pwn9.PwnFilter.minecraft.listener.*;
+import com.pwn9.PwnFilter.minecraft.listener.PlayerCacheListener;
+import com.pwn9.PwnFilter.minecraft.listener.PwnFilterBookListener;
+import com.pwn9.PwnFilter.minecraft.listener.PwnFilterCommandListener;
+import com.pwn9.PwnFilter.minecraft.listener.PwnFilterEntityListener;
+import com.pwn9.PwnFilter.minecraft.listener.PwnFilterInvListener;
+import com.pwn9.PwnFilter.minecraft.listener.PwnFilterPlayerListener;
+import com.pwn9.PwnFilter.minecraft.listener.PwnFilterServerCommandListener;
+import com.pwn9.PwnFilter.minecraft.listener.PwnFilterSignListener;
 import com.pwn9.PwnFilter.minecraft.util.Tracker;
 import com.pwn9.PwnFilter.rules.RuleChain;
 import com.pwn9.PwnFilter.util.LogManager;
-import net.milkbowl.vault.economy.Economy;
-import org.bukkit.event.HandlerList;
-import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.plugin.java.JavaPlugin;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.mcstats.Metrics;
+import org.slf4j.Logger;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.config.DefaultConfig;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.state.GameInitializationEvent;
+import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
+import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.plugin.PluginContainer;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -48,14 +60,26 @@ import java.util.concurrent.ConcurrentMap;
 // TODO: It's powerful.  Now, make it easier.
 // TODO: Make 'base' files that users can pull in to get started quickly (eg: swearing.txt, hate.txt, etc.)
 // TODO: Multiverse-support? (Different configs for different worlds)
-public class PwnFilterPlugin extends JavaPlugin {
+@Plugin(name = "PwnFilter", id = "pwnfilter", version = "1.0")
+public class PwnFilterPlugin {
 
     private static PwnFilterPlugin _instance;
     private static MinecraftAPI minecraftAPI;
     private Metrics metrics;
     public static Tracker matchTracker;
     private Metrics.Graph eventGraph;
-    public static Economy economy = null;
+    //public static Economy economy = null;
+
+    @Inject
+    private Logger logger;
+
+    @Inject
+    @DefaultConfig(sharedRoot = false)
+    private ConfigurationLoader<CommentedConfigurationNode> configManager;
+
+    @Inject
+    @ConfigDir(sharedRoot = false)
+    private File dataFolder;//TODO nio
 
     public static final ConcurrentMap<UUID, String> lastMessage = new MapMaker().concurrencyLevel(2).weakKeys().makeMap();
 
@@ -79,24 +103,18 @@ public class PwnFilterPlugin extends JavaPlugin {
     }
 
     /** {@inheritDoc} */
-    @Override
-    public void onLoad() {
+    @Listener
+    public void onLoad(GameInitializationEvent event) {
 
         // Set up the Log manager.
-        LogManager.getInstance(getLogger(), getDataFolder());
+        LogManager.getInstance(logger, dataFolder);
 
-        // We're all Bukkit here, so let's set the API appropriately
-        MinecraftServer.setAPI(BukkitAPI.getInstance(this));
-
-    }
-
-    /**
-     * <p>onEnable.</p>
-     */
-    public void onEnable() {
+        // We're all Sponge here, so let's set the API appropriately
+        MinecraftServer.setAPI(SpongeAPI.getInstance(this));
 
         // Initialize Configuration
-        saveDefaultConfig();
+        //TODO sponge
+        // saveDefaultConfig();
 
         // Set up a Vault economy for actions like "fine" (optional)
         setupEconomy();
@@ -118,31 +136,19 @@ public class PwnFilterPlugin extends JavaPlugin {
 
 
         // The Entity Death handler, for custom death messages.
-        getServer().getPluginManager().registerEvents(new PwnFilterEntityListener(),this);
+        Sponge.getGame().getEventManager().registerListeners(this, new PwnFilterEntityListener());
         // The DataCache handler, for async-safe player info (name/world/permissions)
-        getServer().getPluginManager().registerEvents(new PlayerCacheListener(), this);
+        Sponge.getGame().getEventManager().registerListeners(this, new PlayerCacheListener());
 
         // Enable the listeners
         filterEngine.enableClients();
 
         // Set up Command Handlers
-        getCommand("pfreload").setExecutor(new pfreload());
-        getCommand("pfcls").setExecutor(new pfcls());
-        getCommand("pfmute").setExecutor(new pfmute());
-        getCommand("pfdumpcache").setExecutor(new pfdumpcache());
-
-    }
-
-    /**
-     * <p>onDisable.</p>
-     */
-    public void onDisable() {
-
-        FilterEngine.getInstance().unregisterClients();
-
-        HandlerList.unregisterAll(this); // Unregister all remaining handlers.
-
-        LogManager.getInstance().stop();
+        //TODO sponge
+        // getCommand("pfreload").setExecutor(new pfreload());
+        //getCommand("pfcls").setExecutor(new pfcls());
+        //getCommand("pfmute").setExecutor(new pfmute());
+        //getCommand("pfdumpcache").setExecutor(new pfdumpcache());
 
     }
 
@@ -153,7 +159,7 @@ public class PwnFilterPlugin extends JavaPlugin {
         // Activate Plugin Metrics
         try {
             if (metrics == null) {
-                metrics = new Metrics(this);
+                metrics = new Metrics(Sponge.getGame(), Sponge.getPluginManager().getPlugin("pwnfilter").get());//TODO might explode
 
                 eventGraph = metrics.createGraph("Rules by Event");
                 updateMetrics();
@@ -167,16 +173,14 @@ public class PwnFilterPlugin extends JavaPlugin {
 
 
         } catch (IOException e) {
-            LogManager.logger.fine(e.getMessage());
+            LogManager.error(e.getMessage());
         }
-
     }
 
     /**
      * <p>updateMetrics.</p>
      */
     public void updateMetrics() {
-
         ArrayList<String> activeListenerNames = new ArrayList<String>();
         for (FilterClient f : FilterEngine.getInstance().getActiveClients()) {
             activeListenerNames.add(f.getShortName());
@@ -203,7 +207,6 @@ public class PwnFilterPlugin extends JavaPlugin {
                 }
             });
         }
-
     }
 
     /**
@@ -212,22 +215,24 @@ public class PwnFilterPlugin extends JavaPlugin {
     public void configurePlugin() {
 
         MinecraftServer.getAPI().reset();
-        // Whenever we reset the API, we need to make sure the plugin permissions
-        // get re-loaded into the cache.
-        MinecraftServer.getAPI().addCachedPermissions(getDescription().getPermissions());
 
         try {
-            BukkitConfig.loadConfiguration(getConfig(), getDataFolder());
+            SpongeConfig.loadConfiguration(configManager, dataFolder);
         } catch (RuntimeException ex) {
-            LogManager.logger.severe("Fatal configuration failure: " + ex.getMessage());
-            LogManager.logger.severe("PwnFilter disabled.");
-            getPluginLoader().disablePlugin(this);
+            LogManager.error("Fatal configuration failure: " + ex.getMessage());
+            LogManager.error("PwnFilter disabled.");
+            //TODO sponge
+            // getPluginLoader().disablePlugin(this);
         }
+
+        // Whenever we reset the API, we need to make sure the plugin permissions
+        // get re-loaded into the cache.
+        MinecraftServer.getAPI().addCachedPermissions(SpongeConfig.getPermissions());
 
     }
 
-    private void setupEconomy() {
-
+    private void setupEconomy() {//TODO economy api required
+/*
         if (getServer().getPluginManager().getPlugin("Vault") != null) {
             RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
             if (rsp != null) {
@@ -237,6 +242,8 @@ public class PwnFilterPlugin extends JavaPlugin {
             }
         }
         LogManager.logger.info("Vault dependency not found.  Disabling actions requiring Vault");
+        */
+
     }
 
 

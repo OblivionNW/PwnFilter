@@ -1,10 +1,9 @@
 package com.pwn9.PwnFilter.minecraft.listener;
 
 import com.pwn9.PwnFilter.minecraft.PwnFilterPlugin;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.network.ClientConnectionEvent;
 
 /**
  * Listeners for the DataCache
@@ -15,18 +14,18 @@ import org.bukkit.event.player.PlayerQuitEvent;
  * @author ptoal
  * @version $Id: $Id
  */
-public class PlayerCacheListener implements Listener {
+public class PlayerCacheListener {
 
     /**
      * <p>onPlayerQuit.</p>
      *
-     * @param event a {@link org.bukkit.event.player.PlayerQuitEvent} object.
+     * @param event a {@link org.spongepowered.api.event.network.ClientConnectionEvent.Disconnect} object.
      */
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerQuit(PlayerQuitEvent event) {
+    @Listener(order = Order.LAST)
+    public void onPlayerQuit(ClientConnectionEvent.Disconnect event) {
         // Cleanup player messages on quit
-        if (event.getPlayer() != null && PwnFilterPlugin.lastMessage.containsKey(event.getPlayer().getUniqueId())) {
-            PwnFilterPlugin.lastMessage.remove(event.getPlayer().getUniqueId());
+        if (PwnFilterPlugin.lastMessage.containsKey(event.getTargetEntity().getUniqueId())) {
+            PwnFilterPlugin.lastMessage.remove(event.getTargetEntity().getUniqueId());
         }
     }
 

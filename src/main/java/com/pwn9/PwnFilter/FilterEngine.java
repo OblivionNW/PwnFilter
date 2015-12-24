@@ -16,7 +16,7 @@ import com.pwn9.PwnFilter.api.FilterClient;
 import com.pwn9.PwnFilter.minecraft.PwnFilterPlugin;
 import com.pwn9.PwnFilter.rules.action.RegisterActions;
 import com.pwn9.PwnFilter.util.tags.RegisterTags;
-import org.bukkit.plugin.Plugin;
+import org.spongepowered.api.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ public class FilterEngine {
 
     private static FilterEngine _instance;
 
-    private final ConcurrentHashMap<FilterClient,Plugin> registeredClients = new ConcurrentHashMap<FilterClient, Plugin>();
+    private final ConcurrentHashMap<FilterClient, PwnFilterPlugin> registeredClients = new ConcurrentHashMap<>();
 
     private final PwnFilterPlugin plugin;
 
@@ -78,7 +78,7 @@ public class FilterEngine {
      *
      * @return a {@link java.util.Map} object.
      */
-    public Map<FilterClient,Plugin> getRegisteredClients() {
+    public Map<FilterClient,PwnFilterPlugin> getRegisteredClients() {
         return registeredClients;
     }
 
@@ -114,7 +114,7 @@ public class FilterEngine {
      * @param f FilterListener instance
      * @param p Plugin that the listener belongs to.
      */
-    public void registerClient(FilterClient f, Plugin p) {
+    public void registerClient(FilterClient f, PwnFilterPlugin p) {
         if (registeredClients.containsKey(f)) {
             return;
         }

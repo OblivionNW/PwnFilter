@@ -10,24 +10,28 @@
 
 package com.pwn9.PwnFilter.minecraft.listener;
 
+import com.google.common.collect.Lists;
 import com.pwn9.PwnFilter.FilterTask;
 import com.pwn9.PwnFilter.minecraft.api.MinecraftPlayer;
 import com.pwn9.PwnFilter.minecraft.PwnFilterPlugin;
 import com.pwn9.PwnFilter.minecraft.util.ColoredString;
-import com.pwn9.PwnFilter.config.BukkitConfig;
+import com.pwn9.PwnFilter.config.SpongeConfig;
 import com.pwn9.PwnFilter.rules.RuleManager;
 import com.pwn9.PwnFilter.util.LogManager;
-import org.bukkit.Bukkit;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.SignChangeEvent;
-import org.bukkit.plugin.EventExecutor;
-import org.bukkit.plugin.PluginManager;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.manipulator.mutable.tileentity.SignData;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.EventListener;
+import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.block.tileentity.ChangeSignEvent;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.Texts;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -36,7 +40,7 @@ import java.util.List;
  * @author ptoal
  * @version $Id: $Id
  */
-public class PwnFilterSignListener extends BaseListener {
+public class PwnFilterSignListener extends BaseListener implements EventListener<ChangeSignEvent> {
 
     /**
      * <p>Constructor for PwnFilterSignListener.</p>
@@ -60,25 +64,35 @@ public class PwnFilterSignListener extends BaseListener {
      *
      * @param event The SignChangeEvent to be processed.
      */
-    public void onSignChange(SignChangeEvent event) {
+    public void handle(ChangeSignEvent event) {
         if (event.isCancelled()) return;
 
-        MinecraftPlayer bukkitPlayer = MinecraftPlayer.getInstance(event.getPlayer());
+        Optional<Player> playerOptional = event.getCause().first(Player.class);
+        if(!playerOptional.isPresent()) {
+            return;
+        }
+
+        MinecraftPlayer bukkitPlayer = MinecraftPlayer.getInstance(playerOptional.get());
 
         // Permissions Check, if player has bypass permissions, then skip everything.
         if (bukkitPlayer.hasPermission("pwnfilter.bypass.signs")) {
             return;
         }
+
+        SignData signData = event.getText();
+        if (!signData.getValue(Keys.SIGN_LINES).isPresent()) {
+            return;
+        }
+
         // Take the message from the SignListenerEvent and send it through the filter.
         StringBuilder builder = new StringBuilder();
 
-        for (String l :event.getLines()) {
-            builder.append(l).append("\t");
+        for (Text l : signData.getValue(Keys.SIGN_LINES).get()) {
+            builder.append(Texts.toPlain(l)).append("\t");
         }
         String signLines = builder.toString().trim();
 
-        FilterTask filterTask = new FilterTask(new ColoredString(signLines),
-                bukkitPlayer, this);
+        FilterTask filterTask = new FilterTask(new ColoredString(signLines), bukkitPlayer, this);
 
         ruleChain.execute(filterTask);
 
@@ -88,7 +102,7 @@ public class PwnFilterSignListener extends BaseListener {
             List<String> newLines = new ArrayList<String>();
 
             // Global decolor
-            if ((BukkitConfig.decolor()) && !(bukkitPlayer.hasPermission("pwnfilter.color"))) {
+            if ((SpongeConfig.decolor()) && !(bukkitPlayer.hasPermission("pwnfilter.color"))) {
                 Collections.addAll(newLines,filterTask.getModifiedMessage().toString().split("\t"));
             } else {
                 Collections.addAll(newLines,filterTask.getModifiedMessage().getRaw().split("\t"));
@@ -106,13 +120,15 @@ public class PwnFilterSignListener extends BaseListener {
                 }
             }
 
+            ArrayList<Text> newTexts = Lists.newArrayList();
             for (int i = 0 ; i < 4 ; i++ ) {
                 if (outputLines[i] != null) {
-                    event.setLine(i,outputLines[i]);
+                    newTexts.add(Texts.of(outputLines[i]));
                 } else {
-                    event.setLine(i,"");
+                    newTexts.add(Texts.of(""));
                 }
             }
+            event.getTargetTile().offer(Keys.SIGN_LINES, newTexts);
         }
 
         if (filterTask.isCancelled()) {
@@ -138,21 +154,12 @@ public class PwnFilterSignListener extends BaseListener {
     public void activate() {
         if (isActive()) return;
         setRuleChain(RuleManager.getInstance().getRuleChain("sign.txt"));
-
-        PluginManager pm = Bukkit.getPluginManager();
-        EventPriority priority = BukkitConfig.getSignpriority();
-
-        if (BukkitConfig.signfilterEnabled()) {
+        Order priority = SpongeConfig.getSignpriority();
+        if (SpongeConfig.signfilterEnabled()) {
             // Now register the listener with the appropriate priority
-            pm.registerEvent(SignChangeEvent.class, this, priority,
-                    new EventExecutor() {
-                        public void execute(Listener l, Event e) { onSignChange((SignChangeEvent)e); }
-                    },
-                    PwnFilterPlugin.getInstance());
-
-            LogManager.logger.info("Activated SignListener with Priority Setting: " + priority.toString()
+            Sponge.getGame().getEventManager().registerListener(PwnFilterPlugin.getInstance(), ChangeSignEvent.class, SpongeConfig.getSignpriority(), this);
+            LogManager.info("Activated SignListener with Priority Setting: " + priority.toString()
                     + " Rule Count: " + getRuleChain().ruleCount());
-
             setActive();
         }
     }

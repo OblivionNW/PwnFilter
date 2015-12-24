@@ -11,7 +11,7 @@
 package com.pwn9.PwnFilter.minecraft.command;
 
 import com.pwn9.PwnFilter.minecraft.api.MinecraftConsole;
-import com.pwn9.PwnFilter.config.BukkitConfig;
+import com.pwn9.PwnFilter.config.SpongeConfig;
 import com.pwn9.PwnFilter.util.LogManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -39,15 +39,15 @@ public class pfmute implements CommandExecutor {
     /** {@inheritDoc} */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (BukkitConfig.isGlobalMute()) {
+        if (SpongeConfig.isGlobalMute()) {
             MinecraftConsole.getInstance().sendBroadcast(ChatColor.RED + "Global mute cancelled by " + sender.getName());
             LogManager.logger.info("global mute cancelled by " + sender.getName());
-            BukkitConfig.setGlobalMute(false);
+            SpongeConfig.setGlobalMute(false);
         }
         else {
             MinecraftConsole.getInstance().sendBroadcast(ChatColor.RED + "Global mute initiated by " + sender.getName());
             LogManager.logger.info("global mute initiated by " + sender.getName());
-            BukkitConfig.setGlobalMute(true);
+            SpongeConfig.setGlobalMute(true);
         }
         return true;
     }

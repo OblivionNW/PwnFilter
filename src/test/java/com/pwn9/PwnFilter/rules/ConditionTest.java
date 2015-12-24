@@ -9,7 +9,6 @@ import com.pwn9.PwnFilter.minecraft.listener.PwnFilterCommandListener;
 import com.pwn9.PwnFilter.minecraft.listener.PwnFilterPlayerListener;
 import com.pwn9.PwnFilter.rules.action.RegisterActions;
 import com.pwn9.PwnFilter.util.LogManager;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,6 +18,8 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import static junit.framework.Assert.assertEquals;
+
+import javax.annotation.Nonnull;
 
 /**
  * Test Conditions
@@ -45,13 +46,13 @@ public class ConditionTest {
             return false;
         }
 
-        @NotNull
+        @Nonnull
         @Override
         public String getName() {
             return "";
         }
 
-        @NotNull
+        @Nonnull
         @Override
         public UUID getID() {
             return UUID.randomUUID();

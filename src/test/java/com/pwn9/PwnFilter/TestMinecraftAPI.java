@@ -13,7 +13,6 @@ package com.pwn9.PwnFilter;
 import com.pwn9.PwnFilter.api.MessageAuthor;
 import com.pwn9.PwnFilter.minecraft.api.MinecraftAPI;
 import com.pwn9.PwnFilter.minecraft.api.PlayerData;
-import org.bukkit.permissions.Permission;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -35,19 +34,6 @@ public class TestMinecraftAPI implements MinecraftAPI {
     @Override
     public synchronized void addCachedPermission(String permission) {
         permSet.add(permission);
-    }
-
-
-    /**
-     * <p>addCachedPermissions.</p>
-     *
-     * @param permissions a {@link java.util.List} object.
-     */
-    @Override
-    public synchronized void addCachedPermissions(List<Permission> permissions) {
-        for (Permission p : permissions) {
-            permSet.add(p.getName());
-        }
     }
 
     /**

@@ -11,7 +11,6 @@
 package com.pwn9.PwnFilter.minecraft.api;
 
 import com.pwn9.PwnFilter.api.MessageAuthor;
-import org.bukkit.permissions.Permission;
 
 import java.util.List;
 import java.util.Set;
@@ -33,13 +32,6 @@ public interface MinecraftAPI {
      * @param permission a {@link String} object.
      */
     void addCachedPermission(String permission);
-
-    /**
-     * <p>addCachedPermissions.</p>
-     *
-     * @param permissions a {@link java.util.List} object.
-     */
-    void addCachedPermissions(List<Permission> permissions);
 
     /**
      * <p>addCachedPermissions.</p>

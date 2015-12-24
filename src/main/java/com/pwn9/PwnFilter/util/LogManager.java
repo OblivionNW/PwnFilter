@@ -10,11 +10,13 @@
 
 package com.pwn9.PwnFilter.util;
 
+import org.slf4j.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.LogRecord;
 import java.util.logging.SimpleFormatter;
 
 /**
@@ -33,7 +35,7 @@ public class LogManager {
     /** Constant <code>debugMode</code> */
     public static DebugModes debugMode = DebugModes.off;
     /** Constant <code>logger</code> */
-    public static Logger logger;
+    private static Logger logger;
     private static File logFolder;
 
     private FileHandler logfileHandler;
@@ -85,7 +87,7 @@ public class LogManager {
      */
     public void debugLow(String message) {
         if (debugMode.compareTo(DebugModes.low) >= 0) {
-            logger.finer(message);
+            logger.info(message);
         }
     }
 
@@ -96,7 +98,7 @@ public class LogManager {
      */
     public void debugMedium(String message) {
         if (debugMode.compareTo(DebugModes.medium) >= 0) {
-            logger.finer(message);
+            logger.info(message);
         }
     }
 
@@ -107,7 +109,7 @@ public class LogManager {
      */
     public void debugHigh(String message) {
         if (debugMode.compareTo(DebugModes.high) >= 0) {
-            logger.finer(message);
+            logger.info(message);
         }
     }
 
@@ -146,9 +148,28 @@ public class LogManager {
     public void stop() {
         if (logfileHandler != null) {
             logfileHandler.close();
-            LogManager.logger.removeHandler(logfileHandler);
             logfileHandler = null;
         }
+    }
+
+    public static void error(String s) {
+        getInstance().logfileHandler.publish(new LogRecord(Level.SEVERE, s));
+        logger.error(s);
+    }
+
+    public static void warn(String s) {
+        getInstance().logfileHandler.publish(new LogRecord(Level.WARNING, s));
+        logger.warn(s);
+    }
+
+    public static void info(String s) {
+        getInstance().logfileHandler.publish(new LogRecord(Level.INFO, s));
+        logger.info(s);
+    }
+
+    public static void log(String s) {
+        getInstance().logfileHandler.publish(new LogRecord(ruleLogLevel, s));
+        logger.info(s);
     }
 
     public enum DebugModes {
@@ -170,13 +191,12 @@ public class LogManager {
                 SimpleFormatter f = new PwnFormatter();
                 logfileHandler.setFormatter(f);
                 logfileHandler.setLevel(Level.FINEST); // Catch all log messages
-                LogManager.logger.addHandler(logfileHandler);
                 LogManager.logger.info("Now logging to " + fileName );
 
             } catch (IOException e) {
-                LogManager.logger.warning("Unable to open logfile.");
+                LogManager.logger.error("Unable to open logfile.");
             } catch (SecurityException e) {
-                LogManager.logger.warning("Security Exception while trying to add file Handler");
+                LogManager.logger.error("Security Exception while trying to add file Handler");
             }
         }
 

@@ -11,13 +11,13 @@
 package com.pwn9.PwnFilter.rules.action.minecraft;
 
 import com.pwn9.PwnFilter.FilterTask;
+import com.pwn9.PwnFilter.helpers.ChatColor;
 import com.pwn9.PwnFilter.minecraft.api.MinecraftConsole;
 import com.pwn9.PwnFilter.minecraft.util.FileUtil;
 import com.pwn9.PwnFilter.config.FilterConfig;
 import com.pwn9.PwnFilter.rules.action.Action;
 import com.pwn9.PwnFilter.util.LogManager;
 import com.pwn9.PwnFilter.util.tags.TagRegistry;
-import org.bukkit.ChatColor;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -42,9 +42,9 @@ public class BroadcastFile implements Action {
                 messageStrings.add(ChatColor.translateAlternateColorCodes('&',message));
             }
         } catch (FileNotFoundException ex) {
-            LogManager.logger.warning("File not found while trying to add Action: " + ex.getMessage());
+            LogManager.warn("File not found while trying to add Action: " + ex.getMessage());
         } catch (IOException ex) {
-            LogManager.logger.warning("Error reading: " + s);
+            LogManager.warn("Error reading: " + s);
         }
     }
 

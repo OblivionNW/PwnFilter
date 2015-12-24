@@ -69,7 +69,7 @@ public class ShortCutManager {
             String var = thisMatch.substring(1,thisMatch.length()-1);
             String replacement = shortcuts.get(var.toLowerCase());
             if (replacement == null || replacement.isEmpty()) {
-                LogManager.logger.warning("Could not find shortcut: <"+var+">" +
+                LogManager.warn("Could not find shortcut: <"+var+">" +
                         "when parsing: '"+lineData+"'");
                 matcher.appendReplacement(newLineData,"");
             } else {
@@ -121,7 +121,7 @@ public class ShortCutManager {
         File shortcutFile = getFile(fileName);
 
         if (shortcutFile == null ) {
-            LogManager.logger.info("Shortcut File not found: " + fileName);
+            LogManager.info("Shortcut File not found: " + fileName);
             return;
         }
 
@@ -140,7 +140,7 @@ public class ShortCutManager {
 
                 // Line must have shortcut/replacement.  shortcut must be < 3 characters long
                 if (parts.length < 2 || parts[0].length() > 3) {
-                    LogManager.logger.info("Syntax error in " + fileName + " line: " + lineNo);
+                    LogManager.info("Syntax error in " + fileName + " line: " + lineNo);
                     continue;
                 }
                 varset.put(parts[0].toLowerCase(),parts[1]);
@@ -170,7 +170,7 @@ public class ShortCutManager {
                 return null;
             }
         }
-        LogManager.logger.warning("Unable to find shortcut definition file:" + fileName);
+        LogManager.warn("Unable to find shortcut definition file:" + fileName);
         return null;
     }
 }

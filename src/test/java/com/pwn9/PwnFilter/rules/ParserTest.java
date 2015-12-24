@@ -17,7 +17,7 @@ import com.pwn9.PwnFilter.rules.action.RegisterActions;
 import com.pwn9.PwnFilter.rules.action.core.Deny;
 import com.pwn9.PwnFilter.rules.action.targeted.Respond;
 import com.pwn9.PwnFilter.util.LogManager;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**

@@ -10,10 +10,6 @@
 
 package com.pwn9.PwnFilter.minecraft.command;
 
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 
 /**
  * Reload the PwnFilter config.

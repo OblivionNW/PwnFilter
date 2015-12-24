@@ -10,8 +10,7 @@
 
 package com.pwn9.PwnFilter.util;
 
-import org.jetbrains.annotations.NotNull;
-
+import javax.annotation.Nonnull;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -89,7 +88,7 @@ public class SimpleString implements EnhancedString {
         return value;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String toString() {
         return value;

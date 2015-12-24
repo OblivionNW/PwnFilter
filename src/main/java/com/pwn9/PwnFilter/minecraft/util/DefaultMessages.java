@@ -10,8 +10,9 @@
 
 package com.pwn9.PwnFilter.minecraft.util;
 
+import com.pwn9.PwnFilter.config.SpongeConfig;
+import com.pwn9.PwnFilter.helpers.ChatColor;
 import com.pwn9.PwnFilter.minecraft.PwnFilterPlugin;
-import org.bukkit.ChatColor;
 
 /**
  * Simple helper to get default messages from the PwnFilter config.yml
@@ -36,7 +37,7 @@ public class DefaultMessages {
     public static String prepareMessage(String message, String configVarName) {
         String result;
         if ( message == null || message.isEmpty()) {
-            String defmsg = PwnFilterPlugin.getInstance().getConfig().getString(configVarName);
+            String defmsg = SpongeConfig.getString(configVarName);
             result = (defmsg != null) ? defmsg : "";
         } else {
             result = message;

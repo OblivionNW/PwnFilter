@@ -11,26 +11,6 @@
 
 package com.pwn9.PwnFilter.minecraft.listener;
 
-import com.pwn9.PwnFilter.FilterTask;
-import com.pwn9.PwnFilter.minecraft.api.MinecraftPlayer;
-import com.pwn9.PwnFilter.minecraft.PwnFilterPlugin;
-import com.pwn9.PwnFilter.minecraft.util.ColoredString;
-import com.pwn9.PwnFilter.config.BukkitConfig;
-import com.pwn9.PwnFilter.rules.RuleManager;
-import com.pwn9.PwnFilter.util.LogManager;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.EventExecutor;
-import org.bukkit.plugin.PluginManager;
-
 
 /**
  * Listen for Sign Change events and apply the filter to the text.
@@ -59,6 +39,8 @@ public class PwnFilterInvListener extends BaseListener {
      *
      * @param event a {@link org.bukkit.event.inventory.InventoryClickEvent} object.
      */
+    //needs inv implementation
+    /*
     public void onInventoryEvent(InventoryClickEvent event) {
         Player player;
         String message;
@@ -102,7 +84,7 @@ public class PwnFilterInvListener extends BaseListener {
         }
 
     }
-
+*/
 
     /**
      * {@inheritDoc}
@@ -117,13 +99,13 @@ public class PwnFilterInvListener extends BaseListener {
     @Override
     public void activate() {
         if (isActive()) return;
-
+/*
         setRuleChain(RuleManager.getInstance().getRuleChain("item.txt"));
 
         PluginManager pm = Bukkit.getPluginManager();
-        EventPriority priority = BukkitConfig.getItempriority();
+        EventPriority priority = SpongeConfig.getItempriority();
 
-        if (!active && BukkitConfig.itemFilterEnabled()) {
+        if (!active && SpongeConfig.itemFilterEnabled()) {
             // Now register the listener with the appropriate priority
             pm.registerEvent(InventoryClickEvent.class, this, priority,
                     new EventExecutor() {
@@ -135,6 +117,6 @@ public class PwnFilterInvListener extends BaseListener {
                     + " Rule Count: " + getRuleChain().ruleCount() );
 
         }
-    }
+*/    }
 }
 
