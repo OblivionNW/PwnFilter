@@ -12,7 +12,6 @@ package com.pwn9.PwnFilter;
 
 import com.pwn9.PwnFilter.api.MessageAuthor;
 import com.pwn9.PwnFilter.minecraft.api.MinecraftAPI;
-import com.pwn9.PwnFilter.minecraft.api.PlayerData;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -24,36 +23,8 @@ import java.util.concurrent.ExecutionException;
  */
 public class TestMinecraftAPI implements MinecraftAPI {
 
-    final Set<String> permSet = new HashSet<String>();
-
-    @Override
-    public void reset() {
-
-    }
-
-    @Override
-    public synchronized void addCachedPermission(String permission) {
-        permSet.add(permission);
-    }
-
-    /**
-     * <p>addCachedPermissions.</p>
-     *
-     * @param permissions a {@link java.util.Set} object.
-     */
-    @Override
-    public synchronized void addCachedPermissions(Set<String> permissions) {
-        permSet.addAll(permissions);
-    }
-
-
     @Override
     public MessageAuthor getAuthor(UUID uuid) {
-        return null;
-    }
-
-    @Override
-    public PlayerData getData(UUID uuid) throws ExecutionException {
         return null;
     }
 

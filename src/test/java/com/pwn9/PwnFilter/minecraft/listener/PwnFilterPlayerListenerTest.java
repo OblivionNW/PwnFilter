@@ -24,6 +24,10 @@ import org.easymock.Mock;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.command.MessageSinkEvent;
+import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.sink.MessageSinkFactory;
 
 import java.io.File;
 import java.util.HashSet;
@@ -44,7 +48,7 @@ public class PwnFilterPlayerListenerTest {
     @Mock
     Player mockPlayer;
 
-    AsyncPlayerChatEvent chatEvent;
+    MessageSinkEvent.Chat chatEvent;
     Configuration testConfig;
     final File resourcesDir = new File(getClass().getResource("/config.yml").getFile()).getParentFile();
     final PwnFilterPlayerListener playerListener = new PwnFilterPlayerListener();

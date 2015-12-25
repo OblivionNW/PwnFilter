@@ -18,6 +18,9 @@ import com.pwn9.PwnFilter.config.SpongeConfig;
 import com.pwn9.PwnFilter.minecraft.api.SpongeAPI;
 import com.pwn9.PwnFilter.minecraft.api.MinecraftAPI;
 import com.pwn9.PwnFilter.minecraft.api.MinecraftServer;
+import com.pwn9.PwnFilter.minecraft.command.ClearChatCommandExecutor;
+import com.pwn9.PwnFilter.minecraft.command.GlobalMuteCommandExecutor;
+import com.pwn9.PwnFilter.minecraft.command.ReloadCommandExecutor;
 import com.pwn9.PwnFilter.minecraft.listener.PlayerCacheListener;
 import com.pwn9.PwnFilter.minecraft.listener.PwnFilterBookListener;
 import com.pwn9.PwnFilter.minecraft.listener.PwnFilterCommandListener;
@@ -34,13 +37,12 @@ import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.mcstats.Metrics;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
-import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.api.plugin.PluginContainer;
 
 import java.io.File;
 import java.io.IOException;
@@ -144,11 +146,12 @@ public class PwnFilterPlugin {
         filterEngine.enableClients();
 
         // Set up Command Handlers
-        //TODO sponge
-        // getCommand("pfreload").setExecutor(new pfreload());
-        //getCommand("pfcls").setExecutor(new pfcls());
-        //getCommand("pfmute").setExecutor(new pfmute());
-        //getCommand("pfdumpcache").setExecutor(new pfdumpcache());
+        CommandSpec pfreloadCommandSpec = CommandSpec.builder().executor(new ReloadCommandExecutor()).permission("pwnfilter.reload").build();
+        Sponge.getGame().getCommandManager().register(this, pfreloadCommandSpec, "pfreload");
+        CommandSpec pfmuteCommandSpec = CommandSpec.builder().executor(new GlobalMuteCommandExecutor()).permission("pwnfilter.mute").build();
+        Sponge.getGame().getCommandManager().register(this, pfmuteCommandSpec, "pfmute");
+        CommandSpec pfclsCommandSpec = CommandSpec.builder().executor(new ClearChatCommandExecutor()).permission("pwnfilter.cls").build();
+        Sponge.getGame().getCommandManager().register(this, pfclsCommandSpec, "pfcls");
 
     }
 
