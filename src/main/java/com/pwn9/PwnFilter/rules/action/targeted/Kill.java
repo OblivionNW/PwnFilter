@@ -29,7 +29,7 @@ public class Kill implements Action {
     /** {@inheritDoc} */
     public void init(String s)
     {
-        messageString = DefaultMessages.prepareMessage(s, "burnmsg");
+        messageString = DefaultMessages.prepareMessage(s, "killmsg");
     }
 
     /** {@inheritDoc} */

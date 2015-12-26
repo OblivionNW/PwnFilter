@@ -10,12 +10,10 @@
 
 package com.pwn9.PwnFilter.config;
 
-import com.google.common.collect.Sets;
 import com.google.common.reflect.TypeToken;
-import com.pwn9.PwnFilter.rules.action.Action;
-import com.pwn9.PwnFilter.rules.action.ActionFactory;
 import com.pwn9.PwnFilter.util.LogManager;
 import com.pwn9.PwnFilter.util.PointManager;
+import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
@@ -25,7 +23,6 @@ import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * A largely static object, which serves as an interface to the PwnFilter Sponge
@@ -35,7 +32,6 @@ import java.util.Set;
  */
 public class SpongeConfig {
 
-	private static ConfigurationLoader<CommentedConfigurationNode> configManager;
 	private static CommentedConfigurationNode rootNode;
 
 	// Global Plugin switches
@@ -46,8 +42,7 @@ public class SpongeConfig {
 	public static void loadConfiguration(ConfigurationLoader<CommentedConfigurationNode> configManagerIn, File folder) {
 		try {
 			dataFolder = folder;
-			configManager = configManagerIn;
-			rootNode = configManager.load();
+			rootNode = configManagerIn.load(ConfigurationOptions.defaults().setShouldCopyDefaults(true));
 
 			CommentedConfigurationNode loggingNode = rootNode.getNode("Logging");
 			if (loggingNode.getNode("logfile").getBoolean(true)) {
@@ -76,6 +71,8 @@ public class SpongeConfig {
 			LogManager.setDebugMode(loggingNode.getNode("debug").getString("off"));
 
 			setupPoints();
+
+			configManagerIn.save(rootNode);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -83,7 +80,7 @@ public class SpongeConfig {
 
 
 	private static void setupPoints() {
-		CommentedConfigurationNode pointsSection = rootNode.getNode("points");
+		CommentedConfigurationNode pointsSection = rootNode.getNode("Points");
 		if (!pointsSection.getNode("enabled").getBoolean(false)) {
 			if (PointManager.isEnabled()) {
 				PointManager.getInstance().shutdown();
@@ -164,17 +161,13 @@ public class SpongeConfig {
 
 	}
 
-	public static Set<String> getPermissions() {
-		return Sets.newHashSet();//TODO sponge
-	}
-
 	/* Accessors */
 	public File getDataFolder() {
 		return dataFolder;
 	}
 
 	public static boolean decolor() {
-		return rootNode.getNode("General").getNode("decolor").getBoolean(false);
+		return rootNode.getNode("FilterOptions").getNode("decolor").getBoolean(false);
 	}
 
 	public static boolean isGlobalMute() {
@@ -215,15 +208,15 @@ public class SpongeConfig {
 	}
 
 	public static boolean cmdfilterEnabled() {
-		return rootNode.getNode("commandfilter").getBoolean(true);
+		return rootNode.getNode("FilterOptions").getNode("commandfilter").getBoolean(true);
 	}
 
 	public static boolean commandspamfilterEnabled() {
-		return rootNode.getNode("commandspamfilter").getBoolean(true);
+		return rootNode.getNode("FilterOptions").getNode("commandspamfilter").getBoolean(true);
 	}
 
 	public static boolean spamfilterEnabled() {
-		return rootNode.getNode("spamfilter").getBoolean(true);
+		return rootNode.getNode("FilterOptions").getNode("spamfilter").getBoolean(true);
 	}
 
 	public static Order getBookpriority() {
@@ -231,19 +224,19 @@ public class SpongeConfig {
 	}
 
 	public static boolean bookfilterEnabled() {
-		return rootNode.getNode("bookfilter").getBoolean(true);
+		return rootNode.getNode("FilterOptions").getNode("bookfilter").getBoolean(true);
 	}
 
 	public static boolean itemFilterEnabled() {
-		return rootNode.getNode("itemfilter").getBoolean(true);
+		return rootNode.getNode("FilterOptions").getNode("itemfilter").getBoolean(true);
 	}
 
 	public static Order getItempriority() {
-		return Order.valueOf(rootNode.getNode("itempriority").getString("LAST").toUpperCase());
+		return Order.valueOf(rootNode.getNode("FilterOptions").getNode("itempriority").getString("LAST").toUpperCase());
 	}
 
 	public static boolean consolefilterEnabled() {
-		return rootNode.getNode("consolefilter").getBoolean(false);
+		return rootNode.getNode("FilterOptions").getNode("consolefilter").getBoolean(false);
 	}
 
 	public static Order getSignpriority() {
@@ -251,11 +244,11 @@ public class SpongeConfig {
 	}
 
 	public static boolean signfilterEnabled() {
-		return rootNode.getNode("signfilter").getBoolean(true);
+		return rootNode.getNode("FilterOptions").getNode("signfilter").getBoolean(true);
 	}
 
 
 	public static String getString(String stringName) {
-		return rootNode.getNode("Strings").getString("UNKNOWN STRING ;-; "+stringName);
+		return rootNode.getNode("Strings").getNode(stringName).getString("UNKNOWN STRING ;-; "+stringName);
 	}
 }
