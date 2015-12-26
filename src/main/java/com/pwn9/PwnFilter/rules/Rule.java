@@ -35,10 +35,10 @@ public class Rule implements ChainEntry {
     private String description = "";
     private String id = "";
 
-    final List<Condition> conditions = new ArrayList<Condition>();
-    final List<Action> actions = new ArrayList<Action>();
-    public final List<String> includeEvents = new ArrayList<String>();
-    public final List<String> excludeEvents = new ArrayList<String>();
+    final List<Condition> conditions = new ArrayList<>();
+    final List<Action> actions = new ArrayList<>();
+    public final List<String> includeEvents = new ArrayList<>();
+    public final List<String> excludeEvents = new ArrayList<>();
 
         /* Constructors */
 
@@ -124,14 +124,8 @@ public class Rule implements ChainEntry {
     /** {@inheritDoc} */
     @Override
     public Set<String> getPermissionList() {
-        Set<String> permList = new HashSet<String>();
-
-        for (Condition c : conditions) {
-            if (c.type == Condition.CondType.permission) {
-                Collections.addAll(permList, c.parameters.split("\\|"));
-            }
-        }
-
+        Set<String> permList = new HashSet<>();
+        conditions.stream().filter(c -> c.type == Condition.CondType.permission).forEach(c -> Collections.addAll(permList, c.parameters.split("\\|")));
         return permList;
     }
 

@@ -41,8 +41,8 @@ public class PointManager implements FilterClient {
 
     private static PointManager _instance;
 
-    private final Map<UUID,Double> pointsMap = new ConcurrentHashMap<UUID, Double>(8, 0.75f, 2);
-    private final TreeMap<Double, Threshold> thresholds = new TreeMap<Double,Threshold>();
+    private final Map<UUID,Double> pointsMap = new ConcurrentHashMap<>(8, 0.75f, 2);
+    private final TreeMap<Double, Threshold> thresholds = new TreeMap<>();
 
     private int leakInterval;
     private Double leakPoints;
@@ -86,21 +86,18 @@ public class PointManager implements FilterClient {
     public void clearThresholds() {
         thresholds.clear();
         // Setup the 0 threshold
-        addThreshold("Default", (double) 0, new ArrayList<Action>(), new ArrayList<Action>());
+        addThreshold("Default", (double) 0, new ArrayList<>(), new ArrayList<>());
     }
 
 
     private void startLeaking() {
         final PointManager pointManager = this;
 
-            final Runnable leakTask = new Runnable() {
-                @Override
-                public void run() {
-                    //Every interval, check point balances, and if they are > 0, subtract leakPoints
-                    // from the players balance.  If they reach 0, remove them from the list.
-                    for (UUID id : pointManager.getPointsMap()) {
-                        pointManager.subPoints(id, leakPoints);
-                    }
+            final Runnable leakTask = () -> {
+                //Every interval, check point balances, and if they are > 0, subtract leakPoints
+                // from the players balance.  If they reach 0, remove them from the list.
+                for (UUID id : pointManager.getPointsMap()) {
+                    pointManager.subPoints(id, leakPoints);
                 }
             };
         if (leakHandle == null) {

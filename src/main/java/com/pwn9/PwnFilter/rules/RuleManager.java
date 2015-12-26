@@ -33,7 +33,7 @@ import java.util.Map;
 @SuppressWarnings("UnusedDeclaration")
 public class RuleManager {
     private static RuleManager _instance = null;
-    private final Map<String, RuleChain> ruleChains = Collections.synchronizedMap(new HashMap<String, RuleChain>());
+    private final Map<String, RuleChain> ruleChains = Collections.synchronizedMap(new HashMap<>());
 
     private RuleManager() {}
 
@@ -84,9 +84,7 @@ public class RuleManager {
 
         // Invalidate all ruleChains
         synchronized (ruleChains) {
-            for (RuleChain rc : ruleChains.values()) {
-                rc.resetChain();
-            }
+            ruleChains.values().forEach(RuleChain::resetChain);
 
             // Reload all the shortcuts
             ShortCutManager.getInstance().reloadFiles();

@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 public class ShortCutManager {
     // TODO: Create a "ShortCuts" object to pass around, instead of HashMaps.
     private static ShortCutManager _instance;
-    private static final Map<String, Map<String,String>> shortcutFiles = new HashMap<String, Map<String, String>>();
+    private static final Map<String, Map<String,String>> shortcutFiles = new HashMap<>();
 
     private ShortCutManager() {}
 
@@ -116,7 +116,7 @@ public class ShortCutManager {
      */
     private void loadFile(String fileName) {
 
-        Map<String,String> varset = new HashMap<String, String>();
+        Map<String,String> varset = new HashMap<>();
 
         File shortcutFile = getFile(fileName);
 

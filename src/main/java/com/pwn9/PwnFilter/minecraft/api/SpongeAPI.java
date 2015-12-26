@@ -100,6 +100,7 @@ public class SpongeAPI implements MinecraftAPI {
       **********
     */
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public boolean burn(final UUID uuid, final int duration, final String messageString) {
         safeSpongeDispatch(
@@ -180,6 +181,7 @@ public class SpongeAPI implements MinecraftAPI {
 
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void kill(final UUID uuid, final String messageString) {
         safeSpongeDispatch(

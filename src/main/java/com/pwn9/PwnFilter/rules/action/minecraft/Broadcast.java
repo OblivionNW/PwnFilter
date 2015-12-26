@@ -17,6 +17,7 @@ import com.pwn9.PwnFilter.rules.action.Action;
 import com.pwn9.PwnFilter.util.tags.TagRegistry;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 /**
  * Responds to the user with the string provided.
@@ -25,7 +26,7 @@ import java.util.ArrayList;
  */
 @SuppressWarnings("UnusedDeclaration")
 public class Broadcast implements Action {
-    final ArrayList<String> messageStrings = new ArrayList<String>();
+    final ArrayList<String> messageStrings = new ArrayList<>();
 
     /** {@inheritDoc} */
     public void init(String s)
@@ -44,11 +45,7 @@ public class Broadcast implements Action {
         can be sent to more than just the minecraft server (eg: to IRC)
          */
 
-        final ArrayList<String> preparedMessages = new ArrayList<String>();
-
-        for (String message : messageStrings) {
-            preparedMessages.add(TagRegistry.replaceTags(message, filterTask));
-        }
+        final ArrayList<String> preparedMessages = messageStrings.stream().map(message -> TagRegistry.replaceTags(message, filterTask)).collect(Collectors.toCollection(ArrayList::new));
 
         filterTask.addLogMessage("Broadcasted: " + preparedMessages.get(0) + (preparedMessages.size() > 1 ? "..." : ""));
 

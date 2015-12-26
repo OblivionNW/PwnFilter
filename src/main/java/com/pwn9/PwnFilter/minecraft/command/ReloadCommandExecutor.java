@@ -16,7 +16,7 @@ public class ReloadCommandExecutor implements CommandExecutor {
 
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-		src.sendMessage(Texts.of(TextColors.RED, "Reloading config.yml and rules/*.txt files."));
+		src.sendMessage(Texts.of(TextColors.RED, "Reloading pwnfilter.conf and rules/*.txt files."));
 
 		LogManager.info("Disabling all listeners");
 		FilterEngine.getInstance().disableClients();

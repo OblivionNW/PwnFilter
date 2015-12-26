@@ -22,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 /**
  * Responds to the user with the string provided.
@@ -31,7 +32,7 @@ import java.util.ArrayList;
  */
 @SuppressWarnings("UnusedDeclaration")
 public class RespondFile implements Action {
-    final ArrayList<String> messageStrings = new ArrayList<String>();
+    final ArrayList<String> messageStrings = new ArrayList<>();
 
     /**
      * {@inheritDoc}
@@ -56,11 +57,7 @@ public class RespondFile implements Action {
      * {@inheritDoc}
      */
     public void execute(final FilterTask filterTask) {
-        final ArrayList<String> preparedMessages = new ArrayList<String>();
-
-        for (String message : messageStrings) {
-            preparedMessages.add(TagRegistry.replaceTags(message, filterTask));
-        }
+        final ArrayList<String> preparedMessages = messageStrings.stream().map(message -> TagRegistry.replaceTags(message, filterTask)).collect(Collectors.toCollection(ArrayList::new));
 
         filterTask.getAuthor().sendMessages(preparedMessages);
 

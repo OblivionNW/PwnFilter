@@ -97,7 +97,7 @@ public class RuleStreamReader extends LineNumberReader{
      * @throws java.io.IOException if any.
      */
     public List<NumberedLine> readSection() throws IOException {
-        List<NumberedLine> result = new ArrayList<NumberedLine>();
+        List<NumberedLine> result = new ArrayList<>();
         String line;
 
         while ((line = readLine()) != null) {

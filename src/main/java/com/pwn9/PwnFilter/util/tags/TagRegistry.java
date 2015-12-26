@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 public class TagRegistry {
 
     private static final HashMap<String, Tag> tagMap
-            = new HashMap<String, Tag>();
+            = new HashMap<>();
 
     public static void addTag(String name, Tag tag) {
         if (tagMap.containsKey(name))

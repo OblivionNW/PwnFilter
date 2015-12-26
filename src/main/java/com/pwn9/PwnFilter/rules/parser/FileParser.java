@@ -92,7 +92,7 @@ public class FileParser {
      */
     public Set<String> getParentFiles() {
         FileParser nextParent = parent;
-        HashSet<String> result = new HashSet<String>();
+        HashSet<String> result = new HashSet<>();
 
         while (nextParent != null) {
             result.add(nextParent.getFilename());
@@ -278,7 +278,7 @@ public class FileParser {
      */
     private void parseActionGroup(String groupName, List<NumberedLine> lines) throws ParserException {
 
-        ArrayList<Action> actionGroup = new ArrayList<Action>();
+        ArrayList<Action> actionGroup = new ArrayList<>();
 
         for (NumberedLine line : lines) {
             TokenString tString = new TokenString(line.string);
@@ -310,7 +310,7 @@ public class FileParser {
      */
     private void parseConditionGroup(String groupName, List<NumberedLine> lines) throws ParserException {
 
-        ArrayList<Condition> conditionGroup = new ArrayList<Condition>();
+        ArrayList<Condition> conditionGroup = new ArrayList<>();
 
         for (NumberedLine line : lines) {
             TokenString tString = new TokenString(line.string);

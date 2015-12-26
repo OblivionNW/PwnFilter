@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * Handle Startup / Shutdown / Configuration of our PwnFilter Clients
@@ -66,11 +67,7 @@ public class FilterEngine {
      * @return a {@link java.util.List} object.
      */
     public List<FilterClient> getActiveClients() {
-        List<FilterClient> result = new ArrayList<FilterClient>();
-        for (FilterClient f : registeredClients.keySet()) {
-            if (f.isActive()) result.add(f);
-        }
-        return result;
+        return registeredClients.keySet().stream().filter(f -> f.isActive()).collect(Collectors.toList());
     }
 
     /**
@@ -86,20 +83,14 @@ public class FilterEngine {
      * <p>enableClients.</p>
      */
     public void enableClients() {
-
-        for (FilterClient f : registeredClients.keySet()) {
-            f.activate();
-        }
-
+        registeredClients.keySet().forEach(FilterClient::activate);
     }
 
     /**
      * <p>disableClients.</p>
      */
     public void disableClients() {
-        for (FilterClient f : getActiveClients()) {
-            f.shutdown();
-        }
+        getActiveClients().forEach(FilterClient::shutdown);
     }
 
     /**

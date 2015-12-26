@@ -49,6 +49,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 /**
  * A Regular Expression (REGEX) Chat Filter For Bukkit with many great features
@@ -184,17 +185,10 @@ public class PwnFilterPlugin {
      * <p>updateMetrics.</p>
      */
     public void updateMetrics() {
-        ArrayList<String> activeListenerNames = new ArrayList<String>();
-        for (FilterClient f : FilterEngine.getInstance().getActiveClients()) {
-            activeListenerNames.add(f.getShortName());
-        }
+        ArrayList<String> activeListenerNames = FilterEngine.getInstance().getActiveClients().stream().map(FilterClient::getShortName).collect(Collectors.toCollection(ArrayList::new));
 
         // Remove old plotters
-        for (Metrics.Plotter p : eventGraph.getPlotters()) {
-            if (!activeListenerNames.contains(p.getColumnName())) {
-                eventGraph.removePlotter(p);
-            }
-        }
+        eventGraph.getPlotters().stream().filter(p -> !activeListenerNames.contains(p.getColumnName())).forEach(p -> eventGraph.removePlotter(p));
 
         // Add new plotters
         for (final FilterClient f : FilterEngine.getInstance().getActiveClients()) {

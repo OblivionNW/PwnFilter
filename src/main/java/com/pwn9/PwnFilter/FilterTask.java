@@ -37,7 +37,7 @@ public class FilterTask {
     private EnhancedString modifiedMessage; // Modified message string
     private final MessageAuthor author; // Author that this event is connected to.
     private final FilterClient filterClient;
-    private final List<String> logMessages = new ArrayList<String>(); // Rules can add strings to this array.  They will be output to log if log=true
+    private final List<String> logMessages = new ArrayList<>(); // Rules can add strings to this array.  They will be output to log if log=true
     private boolean logging = false;  // If true, actions will be logged
     private boolean aborted = false; // If set true by a rule, will stop further processing.
     private boolean cancelled = false; // If set true, will cancel this event.
@@ -127,7 +127,7 @@ public class FilterTask {
     /**
      * <p>Getter for the field <code>author</code>.</p>
      *
-     * @return a {@link org.bukkit.entity.Player} object.
+     * @return a {@link MessageAuthor} object.
      */
     public MessageAuthor getAuthor() {
         return author;

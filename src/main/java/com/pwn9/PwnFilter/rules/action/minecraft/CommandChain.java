@@ -40,7 +40,7 @@ public class CommandChain implements Action {
     /** {@inheritDoc} */
     public void execute(final FilterTask filterTask) {
         filterTask.setCancelled();
-        final ArrayList<String> parsedCommands = new ArrayList<String>();
+        final ArrayList<String> parsedCommands = new ArrayList<>();
 
         for (String cmd : commands)
             parsedCommands.add(TagRegistry.replaceTags(cmd, filterTask));

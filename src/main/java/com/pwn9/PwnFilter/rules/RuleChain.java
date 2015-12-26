@@ -45,10 +45,10 @@ public class RuleChain implements Chain,ChainEntry {
     }
 
     private ChainState chainState;
-    private final List<ChainEntry> chain = new ArrayList<ChainEntry>();
+    private final List<ChainEntry> chain = new ArrayList<>();
     private final Multimap<String, Action> actionGroups = ArrayListMultimap.create();
     private final Multimap<String, Condition> conditionGroups = ArrayListMultimap.create();
-    private final Set<RuleChainListener> listeners = new HashSet<RuleChainListener>();
+    private final Set<RuleChainListener> listeners = new HashSet<>();
 
     private final String configName;
 
@@ -119,11 +119,6 @@ public class RuleChain implements Chain,ChainEntry {
      * (possibly modified) message against subsequent rules.
      */
     public void apply(FilterTask filterTask) throws IllegalStateException {
-
-        if (chain == null) {
-            throw new IllegalStateException("Chain is empty: " + configName);
-        }
-
         for (ChainEntry entry : chain) {
             if (filterTask.isAborted()) break;
             entry.apply(filterTask);
@@ -208,7 +203,7 @@ public class RuleChain implements Chain,ChainEntry {
      */
     @Override
     public Set<String> getPermissionList() {
-        TreeSet<String> permList = new TreeSet<String>();
+        TreeSet<String> permList = new TreeSet<>();
 
         for (ChainEntry r : chain) {
             permList.addAll(r.getPermissionList());

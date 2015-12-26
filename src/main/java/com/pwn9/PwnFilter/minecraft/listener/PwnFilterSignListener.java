@@ -64,6 +64,7 @@ public class PwnFilterSignListener extends BaseListener implements EventListener
      *
      * @param event The SignChangeEvent to be processed.
      */
+    @SuppressWarnings("ConstantConditions")
     public void handle(ChangeSignEvent event) {
         if (event.isCancelled()) return;
 
@@ -99,7 +100,7 @@ public class PwnFilterSignListener extends BaseListener implements EventListener
         if (filterTask.messageChanged()){
             // TODO: Can colors be placed on signs?  Wasn't working. Find out why.
             // Break the changed string into new Lines
-            List<String> newLines = new ArrayList<String>();
+            List<String> newLines = new ArrayList<>();
 
             // Global decolor
             if ((SpongeConfig.decolor()) && !(bukkitPlayer.hasPermission("pwnfilter.color"))) {

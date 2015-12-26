@@ -23,7 +23,7 @@ import java.util.HashMap;
 public final class ActionFactory {
 
     public static final HashMap<String, Class<? extends Action>> actionClassMap =
-            new HashMap<String, Class<? extends Action>>();
+            new HashMap<>();
 
     /**
      * <p>getActionFromString.</p>

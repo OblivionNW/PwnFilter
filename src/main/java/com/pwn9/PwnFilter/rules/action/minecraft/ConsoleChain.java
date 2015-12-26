@@ -36,7 +36,7 @@ public class ConsoleChain implements Action {
 
     /** {@inheritDoc} */
     public void execute(final FilterTask filterTask) {
-        final ArrayList<String> parsedCommands = new ArrayList<String>();
+        final ArrayList<String> parsedCommands = new ArrayList<>();
 
         for (String cmd : commands)
             parsedCommands.add(TagRegistry.replaceTags(cmd, filterTask));

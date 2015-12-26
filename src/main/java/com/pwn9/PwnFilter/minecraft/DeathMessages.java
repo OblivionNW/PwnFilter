@@ -25,7 +25,7 @@ public class DeathMessages {
     /**
      * <p>addKilledPlayer.</p>
      *
-     * @param p a {@link org.bukkit.entity.Player} object.
+     * @param p a {@link UUID} object.
      * @param message a {@link String} object.
      */
     public static void addKilledPlayer(UUID p, String message) {
