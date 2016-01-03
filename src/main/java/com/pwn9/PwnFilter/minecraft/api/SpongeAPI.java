@@ -10,33 +10,17 @@
 
 package com.pwn9.PwnFilter.minecraft.api;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.pwn9.PwnFilter.api.MessageAuthor;
 import com.pwn9.PwnFilter.minecraft.DeathMessages;
 import com.pwn9.PwnFilter.minecraft.PwnFilterPlugin;
-import com.pwn9.PwnFilter.util.LogManager;
-import net.minecraft.server.*;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.api.scheduler.Task;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * Handles keeping a cache of data that we need during Async event handling.
@@ -108,7 +92,7 @@ public class SpongeAPI implements MinecraftAPI {
                     Optional<Player> player = Sponge.getGame().getServer().getPlayer(uuid);
                     if (player.isPresent()) {
                         player.get().offer(Keys.FIRE_TICKS, duration);
-                        player.get().sendMessage(Texts.of(messageString));
+                        player.get().sendMessage(Text.of(messageString));
                     }
                 });
 
@@ -121,7 +105,7 @@ public class SpongeAPI implements MinecraftAPI {
                 () -> {
                     Optional<Player> player = Sponge.getGame().getServer().getPlayer(uuid);
                     if (player.isPresent()) {
-                        player.get().sendMessage(Texts.of(message));
+                        player.get().sendMessage(Text.of(message));
                     }
                 }
         );
@@ -176,7 +160,7 @@ public class SpongeAPI implements MinecraftAPI {
                 () -> {
                     Optional<Player> player = Sponge.getGame().getServer().getPlayer(uuid);
                     if (player.isPresent())
-                        player.get().kick(Texts.of(messageString));
+                        player.get().kick(Text.of(messageString));
                 });
 
     }
@@ -211,7 +195,7 @@ public class SpongeAPI implements MinecraftAPI {
 
     @Override
     public void sendConsoleMessage(final String message) {
-        safeSpongeDispatch(() -> Sponge.getGame().getServer().getConsole().sendMessage(Texts.of(message)));
+        safeSpongeDispatch(() -> Sponge.getGame().getServer().getConsole().sendMessage(Text.of(message)));
     }
 
     @Override
@@ -222,7 +206,7 @@ public class SpongeAPI implements MinecraftAPI {
 
     @Override
     public void sendBroadcast(final String message) {
-        safeSpongeDispatch(() -> Sponge.getGame().getServer().getBroadcastSink().sendMessage(Texts.of(message)));
+        safeSpongeDispatch(() -> Sponge.getGame().getServer().getBroadcastChannel().send(Text.of(message)));
     }
 
     @Override
@@ -232,7 +216,7 @@ public class SpongeAPI implements MinecraftAPI {
 
     @Override
     public void executeCommand(final String command) {
-        safeSpongeDispatch(() -> Sponge.getCommandDispatcher().process(Sponge.getGame().getServer().getConsole(), command));
+        safeSpongeDispatch(() -> Sponge.getCommandManager().process(Sponge.getGame().getServer().getConsole(), command));
     }
 
     @Override
@@ -242,7 +226,7 @@ public class SpongeAPI implements MinecraftAPI {
                     if (permissionString.equalsIgnoreCase("console")) {
                         sendConsoleMessage(sendString);
                     } else {
-                        Sponge.getGame().getServer().getOnlinePlayers().stream().filter(p -> p.hasPermission(permissionString)).forEach(p -> p.sendMessage(Texts.of(sendString)));
+                        Sponge.getGame().getServer().getOnlinePlayers().stream().filter(p -> p.hasPermission(permissionString)).forEach(p -> p.sendMessage(Text.of(sendString)));
                     }
                 });
 

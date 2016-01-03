@@ -26,7 +26,7 @@ import org.spongepowered.api.event.EventListener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.block.tileentity.ChangeSignEvent;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -89,7 +89,7 @@ public class PwnFilterSignListener extends BaseListener implements EventListener
         StringBuilder builder = new StringBuilder();
 
         for (Text l : signData.getValue(Keys.SIGN_LINES).get()) {
-            builder.append(Texts.toPlain(l)).append("\t");
+            builder.append(TextSerializers.PLAIN.serialize(l)).append("\t");
         }
         String signLines = builder.toString().trim();
 
@@ -124,9 +124,9 @@ public class PwnFilterSignListener extends BaseListener implements EventListener
             ArrayList<Text> newTexts = Lists.newArrayList();
             for (int i = 0 ; i < 4 ; i++ ) {
                 if (outputLines[i] != null) {
-                    newTexts.add(Texts.of(outputLines[i]));
+                    newTexts.add(Text.of(outputLines[i]));
                 } else {
-                    newTexts.add(Texts.of(""));
+                    newTexts.add(Text.of(""));
                 }
             }
             event.getText().set(Keys.SIGN_LINES, newTexts);

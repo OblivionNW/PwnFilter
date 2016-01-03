@@ -16,7 +16,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 
 /**
  * Catch Death events to rewrite them with a custom message.
@@ -40,7 +40,7 @@ public class PwnFilterEntityListener {
         final Player player = (Player)event.getTargetEntity();
 
         if (DeathMessages.killedPlayers.containsKey(player.getUniqueId())) {
-            event.setMessage(Texts.of(DeathMessages.killedPlayers.remove(player.getUniqueId())));
+            event.setMessage(Text.of(DeathMessages.killedPlayers.remove(player.getUniqueId())));
         }
 
     }

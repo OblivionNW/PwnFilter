@@ -23,8 +23,9 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.EventListener;
 import org.spongepowered.api.event.Order;
-import org.spongepowered.api.event.command.MessageSinkEvent;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.event.message.MessageChannelEvent;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.Optional;
 
@@ -34,7 +35,7 @@ import java.util.Optional;
  * @author ptoal
  * @version $Id: $Id
  */
-public class PwnFilterPlayerListener extends BaseListener implements EventListener<MessageSinkEvent.Chat> {
+public class PwnFilterPlayerListener extends BaseListener implements EventListener<MessageChannelEvent.Chat> {
 
     /**
      * <p>getShortName.</p>
@@ -54,9 +55,9 @@ public class PwnFilterPlayerListener extends BaseListener implements EventListen
     /**
      * <p>onPlayerChat.</p>
      *
-     * @param event a {@link MessageSinkEvent.Chat} object.
+     * @param event a {@link MessageChannelEvent.Chat} object.
      */
-    public void handle(MessageSinkEvent.Chat event) {
+    public void handle(MessageChannelEvent.Chat event) {
 
         if (event.isCancelled()) return;
 
@@ -72,7 +73,8 @@ public class PwnFilterPlayerListener extends BaseListener implements EventListen
         // Permissions Check, if player has bypass permissions, then skip everything.
         if (bukkitPlayer.hasPermission("pwnfilter.bypass.chat")) return;
 
-        String message = Texts.legacy().to(event.getMessage());
+        String message = TextSerializers.LEGACY_FORMATTING_CODE.serialize(event.getMessage().get());
+        //String message = Text.legacy().to(event.getMessage());
 
         // Global mute
         if ((SpongeConfig.isGlobalMute()) && (!bukkitPlayer.hasPermission("pwnfilter.bypass.mute"))) {
@@ -104,7 +106,7 @@ public class PwnFilterPlayerListener extends BaseListener implements EventListen
 
         // Only update the message if it has been changed.
         if (state.messageChanged()){
-            event.setMessage(Texts.of(ChatColor.translateAlternateColorCodes(state.getModifiedMessage().getRaw())));
+            event.setMessage(Text.of(ChatColor.translateAlternateColorCodes(state.getModifiedMessage().getRaw())));
         }
         if (state.isCancelled()) event.setCancelled(true);
     }
@@ -128,7 +130,7 @@ public class PwnFilterPlayerListener extends BaseListener implements EventListen
 
         /* Hook up the Listener for PlayerChat events */
         Order chatPriority = SpongeConfig.getChatpriority();
-        Sponge.getGame().getEventManager().registerListener(PwnFilterPlugin.getInstance(), MessageSinkEvent.Chat.class, chatPriority, this);
+        Sponge.getGame().getEventManager().registerListener(PwnFilterPlugin.getInstance(), MessageChannelEvent.Chat.class, chatPriority, this);
         LogManager.info("Activated PlayerListener with Priority Setting: " + SpongeConfig.getChatpriority().toString()
                 + " Rule Count: " + getRuleChain().ruleCount() );
         setActive();
