@@ -20,6 +20,7 @@ repositories {
 
 dependencies {
     compile files('./libs/metrics-R8-SNAPSHOT.jar')
+	compile 'commons-io:commons-io:2.4'
 }
 
 dependencies {

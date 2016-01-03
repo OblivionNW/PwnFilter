@@ -16,8 +16,13 @@ import com.pwn9.PwnFilter.minecraft.PwnFilterPlugin;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.service.economy.account.UniqueAccount;
+import org.spongepowered.api.service.economy.transaction.ResultType;
+import org.spongepowered.api.service.economy.transaction.TransactionResult;
 import org.spongepowered.api.text.Text;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -136,21 +141,18 @@ public class SpongeAPI implements MinecraftAPI {
 
     @Override
     public boolean withdrawMoney(final UUID uuid, final Double amount, final String messageString) {
-        /*
         if (PwnFilterPlugin.economy != null) {
-            Boolean result = safeSpongeAPICall(
-                    () -> {
-                        Player bukkitPlayer = Bukkit.getPlayer(uuid);
-                        if (bukkitPlayer != null) {
-                            EconomyResponse resp = PwnFilterPlugin.economy.withdrawPlayer(
-                                    Bukkit.getOfflinePlayer(uuid), amount);
-                            bukkitPlayer.sendMessage(messageString);
-                            return resp.transactionSuccess();
-                        }
-                        return false;
-                    });
-            if (result != null) return result;
-        }*/
+            Optional<Player> player = Sponge.getGame().getServer().getPlayer(uuid);
+            if (player.isPresent()) {
+                Optional<UniqueAccount> account = PwnFilterPlugin.economy.getAccount(uuid);
+                if (account.isPresent()) {
+                    TransactionResult transactionResult = account.get()
+                            .withdraw(PwnFilterPlugin.economy.getDefaultCurrency(), new BigDecimal(amount), Cause.of(PwnFilterPlugin.getInstance()));
+                    player.get().sendMessage(Text.of(messageString));
+                    return transactionResult.getResult() == ResultType.SUCCESS;
+                }
+            }
+        }
         return false;
     }
 

@@ -10,6 +10,9 @@
 
 package com.pwn9.PwnFilter.rules.action;
 
+import com.pwn9.PwnFilter.minecraft.PwnFilterPlugin;
+import com.pwn9.PwnFilter.util.LogManager;
+
 import java.util.HashMap;
 
 /**
@@ -62,6 +65,8 @@ public final class ActionFactory {
             newAction.init(actionData);
             return newAction;
         }
+
+        LogManager.error("Action not found "+actionName+" "+actionData);
 
         return null;
 

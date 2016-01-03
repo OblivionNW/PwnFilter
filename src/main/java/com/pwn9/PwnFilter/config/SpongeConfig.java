@@ -10,7 +10,10 @@
 
 package com.pwn9.PwnFilter.config;
 
+import com.google.common.collect.Lists;
 import com.google.common.reflect.TypeToken;
+import com.pwn9.PwnFilter.rules.action.Action;
+import com.pwn9.PwnFilter.rules.action.ActionFactory;
 import com.pwn9.PwnFilter.util.LogManager;
 import com.pwn9.PwnFilter.util.PointManager;
 import ninja.leaping.configurate.ConfigurationOptions;
@@ -21,8 +24,10 @@ import org.spongepowered.api.event.Order;
 
 import javax.annotation.Nonnull;
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A largely static object, which serves as an interface to the PwnFilter Sponge
@@ -98,35 +103,23 @@ public class SpongeConfig {
 	}
 
 	private static void parseThresholds(CommentedConfigurationNode pointsSection) {
-//TODO nope fuck this xD Sponge
-		/*
-		for (String threshold : pointsSection.getKeys(false)) {
-			List<Action> ascending = new ArrayList<Action>();
-			List<Action> descending = new ArrayList<Action>();
-
-			for (String action : pointsSection.getStringList(threshold + ".actions.ascending")) {
-				Action actionObject = ActionFactory.getActionFromString(action);
-				if (actionObject != null) {
-					ascending.add(actionObject);
-				} else {
-					LogManager.logger.warning("Unable to parse action in threshold: " + threshold);
-				}
-			}
-			for (String action : cs.getStringList(threshold + ".actions.descending")) {
-				Action actionObject = ActionFactory.getActionFromString(action);
-				if (actionObject != null) {
-					descending.add(actionObject);
-				} else {
-					LogManager.logger.warning("Unable to parse action in threshold: " + threshold);
-				}
-			}
+		CommentedConfigurationNode thresholdSection = pointsSection.getNode("thresholds");
+		for(CommentedConfigurationNode threshold : thresholdSection.getChildrenMap().values()) {
+			List<String> ascendingLines = getStringList(threshold.getNode("actions", "ascending"));
+			List<Action> ascendingActions = Lists.newArrayListWithCapacity(ascendingLines.size());
+			List<String> descendingLines = getStringList(threshold.getNode("actions", "descending"));
+			List<Action> descendingActions = Lists.newArrayListWithCapacity(ascendingLines.size());
+			ascendingActions.addAll(ascendingLines.stream().map(ActionFactory::getActionFromString).collect(Collectors
+					.toList()));
+			descendingActions.addAll(descendingLines.stream().map(ActionFactory::getActionFromString).collect(Collectors
+					.toList()));
 			PointManager.getInstance().addThreshold(
-					pointsSection.getString(threshold + ".name"),
-					pointsSection.getDouble(threshold + ".points"),
-					ascending,
-					descending);
+					threshold.getNode("name").getString(),
+					threshold.getNode("points").getDouble(),
+					ascendingActions,
+					descendingActions
+			);
 		}
-*/
 	}
 
 
@@ -146,7 +139,7 @@ public class SpongeConfig {
 		if (directoryName.startsWith("/")) {
 			dir = new File(directoryName);
 		} else {
-			dir = new File(dataFolder, directoryName);
+			dir = new File(dataFolder, directoryName);//TODO Lazy way for now
 		}
 		try {
 			if (!dir.exists()) {
@@ -180,7 +173,7 @@ public class SpongeConfig {
 
 	public static List<String> getStringList(CommentedConfigurationNode node) {
 		try {
-			return rootNode.getList(new TypeToken<String>() {});
+			return node.getList(new TypeToken<String>() {});
 		} catch (ObjectMappingException e) {
 			e.printStackTrace();
 			return new ArrayList<>();
@@ -188,15 +181,15 @@ public class SpongeConfig {
 	}
 
 	public static List<String> getCmdlist() {
-		return getStringList(rootNode.getNode("cmdlist"));
+		return getStringList(rootNode.getNode("FilterOptions", "cmdlist"));
 	}
 
 	public static List<String> getCmdblist() {
-		return getStringList(rootNode.getNode("cmdblist"));
+		return getStringList(rootNode.getNode("FilterOptions", "cmdblist"));
 	}
 
 	public static List<String> getCmdchat() {
-		return getStringList(rootNode.getNode("cmdchat"));
+		return getStringList(rootNode.getNode("FilterOptions", "cmdchat"));
 	}
 
 	public static Order getCmdpriority() {

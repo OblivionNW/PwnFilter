@@ -10,7 +10,10 @@
 
 package com.pwn9.PwnFilter.minecraft;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
+import com.google.common.collect.Maps;
+import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.pwn9.PwnFilter.FilterEngine;
 import com.pwn9.PwnFilter.api.FilterClient;
@@ -29,11 +32,13 @@ import com.pwn9.PwnFilter.minecraft.listener.PwnFilterInvListener;
 import com.pwn9.PwnFilter.minecraft.listener.PwnFilterPlayerListener;
 import com.pwn9.PwnFilter.minecraft.listener.PwnFilterServerCommandListener;
 import com.pwn9.PwnFilter.minecraft.listener.PwnFilterSignListener;
+import com.pwn9.PwnFilter.minecraft.util.FileUtil;
 import com.pwn9.PwnFilter.minecraft.util.Tracker;
 import com.pwn9.PwnFilter.rules.RuleChain;
 import com.pwn9.PwnFilter.util.LogManager;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+import org.apache.commons.io.FileUtils;
 import org.mcstats.Metrics;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
@@ -42,17 +47,25 @@ import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
+import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.service.economy.EconomyService;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 /**
- * A Regular Expression (REGEX) Chat Filter For Bukkit with many great features
+ * A Regular Expression (REGEX) Chat Filter For Sponge with many great features
  *
  * @author tremor77
  * @version $Id: $Id
@@ -71,7 +84,7 @@ public class PwnFilterPlugin {
     private Metrics metrics;
     public static Tracker matchTracker;
     private Metrics.Graph eventGraph;
-    //public static Economy economy = null;
+    public static EconomyService economy = null;
 
     @Inject
     private Logger logger;
@@ -117,10 +130,7 @@ public class PwnFilterPlugin {
 
         // Initialize Configuration
         //TODO sponge
-        // saveDefaultConfig();
-
-        // Set up a Vault economy for actions like "fine" (optional)
-        setupEconomy();
+        saveDefaultConfig();
 
         // Now get our configuration
         configurePlugin();
@@ -154,6 +164,34 @@ public class PwnFilterPlugin {
         CommandSpec pfclsCommandSpec = CommandSpec.builder().executor(new ClearChatCommandExecutor()).permission("pwnfilter.cls").build();
         Sponge.getGame().getCommandManager().register(this, pfclsCommandSpec, "pfcls");
 
+    }
+
+    @Listener
+    public void postInit(GamePostInitializationEvent event) {
+        // Set up a economy for actions like "fine" (optional)
+        setupEconomy();
+    }
+
+    private void saveDefaultConfig() {
+        HashMap<String, String> configFiles = Maps.newHashMap();
+        configFiles.put("pwnfilter.conf", "pwnfilter.conf");
+        configFiles.put("book.txt", "rules/book.txt");
+        configFiles.put("chat.txt", "rules/chat.txt");
+        configFiles.put("command.txt", "rules/command.txt");
+        configFiles.put("console.txt", "rules/console.txt");
+        configFiles.put("item.txt", "rules/item.txt");
+        configFiles.put("book.txt", "rules/sign.txt");
+        if(!dataFolder.exists()) {
+            new File(dataFolder, "rules").mkdirs();
+            for(HashMap.Entry<String, String> entry : configFiles.entrySet()) {
+                URL url = PwnFilterPlugin.class.getResource(entry.getKey());
+                try {
+                    FileUtils.copyURLToFile(url, new File(dataFolder, entry.getValue()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     /**
@@ -222,19 +260,14 @@ public class PwnFilterPlugin {
 
     }
 
-    private void setupEconomy() {//TODO economy api required
-/*
-        if (getServer().getPluginManager().getPlugin("Vault") != null) {
-            RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-            if (rsp != null) {
-                economy = rsp.getProvider();
-                LogManager.logger.info("Vault found. Enabling actions requiring Vault");
-                return;
-            }
+    private void setupEconomy() {
+        Optional<EconomyService> economyService = Sponge.getGame().getServiceManager().provide(EconomyService.class);
+        if(economyService.isPresent()) {
+            economy = economyService.get();
+            LogManager.info("EconomyService found. Enabling actions requiring EconomyService");
+            return;
         }
-        LogManager.logger.info("Vault dependency not found.  Disabling actions requiring Vault");
-        */
-
+        LogManager.info("EconomyService dependency not found. Disabling actions requiring EconomyService");
     }
 
 
