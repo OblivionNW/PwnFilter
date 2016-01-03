@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/clienthax/PwnFilter.svg?branch=master)](https://travis-ci.org/clienthax/PwnFilter)
+
 PwnFilter uses the power of regular expressions to filter unwanted 
 messages from chat. 
 
