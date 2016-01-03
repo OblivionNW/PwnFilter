@@ -10,17 +10,15 @@
 
 package com.pwn9.PwnFilter.minecraft;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
 import com.google.common.collect.Maps;
-import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.pwn9.PwnFilter.FilterEngine;
 import com.pwn9.PwnFilter.api.FilterClient;
 import com.pwn9.PwnFilter.config.SpongeConfig;
-import com.pwn9.PwnFilter.minecraft.api.SpongeAPI;
 import com.pwn9.PwnFilter.minecraft.api.MinecraftAPI;
 import com.pwn9.PwnFilter.minecraft.api.MinecraftServer;
+import com.pwn9.PwnFilter.minecraft.api.SpongeAPI;
 import com.pwn9.PwnFilter.minecraft.command.ClearChatCommandExecutor;
 import com.pwn9.PwnFilter.minecraft.command.GlobalMuteCommandExecutor;
 import com.pwn9.PwnFilter.minecraft.command.ReloadCommandExecutor;
@@ -32,14 +30,13 @@ import com.pwn9.PwnFilter.minecraft.listener.PwnFilterInvListener;
 import com.pwn9.PwnFilter.minecraft.listener.PwnFilterPlayerListener;
 import com.pwn9.PwnFilter.minecraft.listener.PwnFilterServerCommandListener;
 import com.pwn9.PwnFilter.minecraft.listener.PwnFilterSignListener;
-import com.pwn9.PwnFilter.minecraft.util.FileUtil;
+import com.pwn9.PwnFilter.minecraft.util.Metrics;
 import com.pwn9.PwnFilter.minecraft.util.Tracker;
 import com.pwn9.PwnFilter.rules.RuleChain;
 import com.pwn9.PwnFilter.util.LogManager;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.apache.commons.io.FileUtils;
-import org.mcstats.Metrics;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.spec.CommandSpec;
@@ -53,12 +50,9 @@ import org.spongepowered.api.service.economy.EconomyService;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
