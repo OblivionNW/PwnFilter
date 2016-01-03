@@ -11,3 +11,5 @@
 PwnFilter.iml
 PwnFilter.ipr
 PwnFilter.iws
+.gradle
+build

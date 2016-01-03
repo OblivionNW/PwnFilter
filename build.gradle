@@ -19,6 +19,10 @@ repositories {
 }
 
 dependencies {
+    compile files('./libs/metrics-R8-SNAPSHOT.jar')
+}
+
+dependencies {
     compile("org.spongepowered:spongeapi:${project.apiVersion}") {
         transitive = true
     }
