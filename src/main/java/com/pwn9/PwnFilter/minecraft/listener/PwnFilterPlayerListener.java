@@ -17,6 +17,7 @@ import com.pwn9.PwnFilter.minecraft.PwnFilterPlugin;
 import com.pwn9.PwnFilter.minecraft.api.MinecraftPlayer;
 import com.pwn9.PwnFilter.minecraft.util.ColoredString;
 import com.pwn9.PwnFilter.rules.RuleManager;
+import com.pwn9.PwnFilter.util.EnhancedString;
 import com.pwn9.PwnFilter.util.LogManager;
 import com.pwn9.PwnFilter.util.SimpleString;
 import org.spongepowered.api.Sponge;
@@ -61,6 +62,9 @@ public class PwnFilterPlayerListener extends BaseListener implements EventListen
 
         if (event.isCancelled()) return;
 
+//        if(1 == 1)
+  //          return;
+
         Optional<Player> playerOptional = event.getCause().first(Player.class);
         if(!playerOptional.isPresent()) {
             return;
@@ -73,7 +77,7 @@ public class PwnFilterPlayerListener extends BaseListener implements EventListen
         // Permissions Check, if player has bypass permissions, then skip everything.
         if (bukkitPlayer.hasPermission("pwnfilter.bypass.chat")) return;
 
-        String message = TextSerializers.LEGACY_FORMATTING_CODE.serialize(event.getMessage().get());
+        String message = TextSerializers.FORMATTING_CODE.serialize(event.getMessage().get());
         //String message = Text.legacy().to(event.getMessage());
 
         // Global mute
@@ -92,12 +96,14 @@ public class PwnFilterPlayerListener extends BaseListener implements EventListen
 
         }
 
+
         FilterTask state = new FilterTask(new ColoredString(message), bukkitPlayer, this);
 
         // Global decolor
         if ((SpongeConfig.decolor()) && !(bukkitPlayer.hasPermission("pwnfilter.color"))) {
             // We are changing the state of the message.  Let's do that before any rules processing.
-            state.setModifiedMessage(new SimpleString(state.getModifiedMessage().toString()));
+            //TODO after the filter..
+            //state.setModifiedMessage(new SimpleString(state.getModifiedMessage().toString()));
         }
 
         // Take the message from the ChatEvent and send it through the filter.
@@ -106,7 +112,7 @@ public class PwnFilterPlayerListener extends BaseListener implements EventListen
 
         // Only update the message if it has been changed.
         if (state.messageChanged()){
-            event.setMessage(Text.of(ChatColor.translateAlternateColorCodes(state.getModifiedMessage().getRaw())));
+            event.setMessage(TextSerializers.FORMATTING_CODE.deserialize((state.getModifiedMessage()).getColoredString()));
         }
         if (state.isCancelled()) event.setCancelled(true);
     }

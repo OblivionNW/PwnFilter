@@ -163,6 +163,10 @@ public class SpongeConfig {
 		return rootNode.getNode("FilterOptions").getNode("decolor").getBoolean(false);
 	}
 
+	public static void setDecolor(boolean decolor) {
+		rootNode.getNode("FilterOptions").getNode("decolor").setValue(decolor);
+	}
+
 	public static boolean isGlobalMute() {
 		return globalMute;
 	}

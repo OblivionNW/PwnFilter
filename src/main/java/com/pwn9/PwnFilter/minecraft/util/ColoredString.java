@@ -12,10 +12,11 @@ package com.pwn9.PwnFilter.minecraft.util;
 
 import com.pwn9.PwnFilter.util.EnhancedString;
 
-import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.annotation.Nonnull;
 
 /**
  * This object is used to provide a mechanism for running regex match and replacements on a string that may
@@ -292,7 +293,7 @@ public final class ColoredString implements EnhancedString {
         }
         return new ColoredString(modified, codes, formatPrefix);
     }
-    
+
     /**
      * <p>patternToUpper.</p>
      *
@@ -310,7 +311,7 @@ public final class ColoredString implements EnhancedString {
             }
         }
         return new ColoredString(modified, codes, formatPrefix);
-    }    
+    }
 
     /**
      * Returns a concatenation of two strings, a + b.  If a or b are null, they

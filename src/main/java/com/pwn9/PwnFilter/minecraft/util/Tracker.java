@@ -10,8 +10,6 @@
 
 package com.pwn9.PwnFilter.minecraft.util;
 
-import org.mcstats.Metrics;
-
 /**
  * Plugin Metrics Tracker class (courtesy of mbaxter)
  *

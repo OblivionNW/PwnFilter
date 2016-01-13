@@ -12,6 +12,7 @@ package com.pwn9.PwnFilter.rules.action.core;
 
 import com.pwn9.PwnFilter.FilterTask;
 import com.pwn9.PwnFilter.helpers.ChatColor;
+import com.pwn9.PwnFilter.minecraft.util.ColoredString;
 import com.pwn9.PwnFilter.rules.action.Action;
 import com.pwn9.PwnFilter.util.SimpleString;
 
@@ -35,6 +36,6 @@ public class Replace implements Action {
 
     /** {@inheritDoc} */
     public void execute(final FilterTask filterTask) {
-        filterTask.setModifiedMessage(new SimpleString(filterTask.getModifiedMessage().toString()).replaceText(filterTask.getPattern(), messageString));
+        filterTask.setModifiedMessage(new ColoredString(filterTask.getModifiedMessage().getColoredString()).replaceText(filterTask.getPattern(), messageString));
     }
 }

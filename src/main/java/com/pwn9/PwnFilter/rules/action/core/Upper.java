@@ -11,6 +11,7 @@
 package com.pwn9.PwnFilter.rules.action.core;
 
 import com.pwn9.PwnFilter.FilterTask;
+import com.pwn9.PwnFilter.minecraft.util.ColoredString;
 import com.pwn9.PwnFilter.rules.action.Action;
 import com.pwn9.PwnFilter.util.EnhancedString;
 
@@ -31,7 +32,7 @@ public class Upper implements Action {
 
     /** {@inheritDoc} */
     public void execute(final FilterTask filterTask) {
-        EnhancedString cs = filterTask.getModifiedMessage();
+        ColoredString cs = filterTask.getModifiedMessage();
         filterTask.addLogMessage("Converting to uppercase.");
         filterTask.setModifiedMessage(cs.patternToUpper(filterTask.getPattern()));
 

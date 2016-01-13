@@ -13,6 +13,7 @@ package com.pwn9.PwnFilter.util;
 import com.pwn9.PwnFilter.FilterTask;
 import com.pwn9.PwnFilter.api.FilterClient;
 import com.pwn9.PwnFilter.api.MessageAuthor;
+import com.pwn9.PwnFilter.minecraft.util.ColoredString;
 import com.pwn9.PwnFilter.rules.RuleChain;
 import com.pwn9.PwnFilter.rules.action.Action;
 
@@ -253,14 +254,14 @@ public class PointManager implements FilterClient {
         }
 
         public void executeAscending(UUID id) {
-            FilterTask state = new FilterTask(new SimpleString(""), id, _instance );
+            FilterTask state = new FilterTask(new ColoredString(""), id, _instance );
             for (Action a : actionsAscending ) {
                 a.execute(state);
             }
         }
 
         public void executeDescending(UUID id) {
-            FilterTask state = new FilterTask(new SimpleString(""), id, _instance );
+            FilterTask state = new FilterTask(new ColoredString(""), id, _instance );
             for (Action a : actionsDescending ) {
                 a.execute(state);
             }

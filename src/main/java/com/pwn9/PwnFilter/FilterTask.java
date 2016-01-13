@@ -13,6 +13,7 @@ package com.pwn9.PwnFilter;
 import com.pwn9.PwnFilter.api.FilterClient;
 import com.pwn9.PwnFilter.api.MessageAuthor;
 import com.pwn9.PwnFilter.minecraft.api.MinecraftServer;
+import com.pwn9.PwnFilter.minecraft.util.ColoredString;
 import com.pwn9.PwnFilter.rules.Rule;
 import com.pwn9.PwnFilter.util.EnhancedString;
 import com.pwn9.PwnFilter.util.SimpleString;
@@ -34,7 +35,7 @@ import java.util.regex.Pattern;
 
 public class FilterTask {
     private final EnhancedString originalMessage; // Original message
-    private EnhancedString modifiedMessage; // Modified message string
+    private ColoredString modifiedMessage; // Modified message string
     private final MessageAuthor author; // Author that this event is connected to.
     private final FilterClient filterClient;
     private final List<String> logMessages = new ArrayList<>(); // Rules can add strings to this array.  They will be output to log if log=true
@@ -55,7 +56,7 @@ public class FilterTask {
      * @param a  a {@link MessageAuthor} object.
      * @param l a {@link FilterClient} object.
      */
-    public FilterTask(EnhancedString m, MessageAuthor a, FilterClient l) {
+    public FilterTask(ColoredString m, MessageAuthor a, FilterClient l) {
         originalMessage = m;
         modifiedMessage = m;
         author = a;
@@ -69,7 +70,7 @@ public class FilterTask {
      * @param l The {@link FilterClient } that generated this message
      */
     public FilterTask(String s, MessageAuthor a, FilterClient l) {
-        this(new SimpleString(s), a, l);
+        this(new ColoredString(s), a, l);
     }
 
     /**
@@ -78,7 +79,7 @@ public class FilterTask {
      * @param uuid Unique ID of the Author
      * @param l Listener that is calling.
      */
-    public FilterTask(EnhancedString m, UUID uuid, FilterClient l) {
+    public FilterTask(ColoredString m, UUID uuid, FilterClient l) {
         originalMessage = m;
         modifiedMessage = m;
         filterClient = l;
@@ -172,7 +173,7 @@ public class FilterTask {
      *
      * @return a {@link EnhancedString} object.
      */
-    public EnhancedString getModifiedMessage() {
+    public ColoredString getModifiedMessage() {
         return modifiedMessage;
     }
 
@@ -181,7 +182,7 @@ public class FilterTask {
      *
      * @param newMessage a {@link EnhancedString} object.
      */
-    public void setModifiedMessage(EnhancedString newMessage) {
+    public void setModifiedMessage(ColoredString newMessage) {
         modifiedMessage = newMessage;
     }
 

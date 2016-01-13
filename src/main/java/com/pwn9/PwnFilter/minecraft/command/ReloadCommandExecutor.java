@@ -23,7 +23,7 @@ public class ReloadCommandExecutor implements CommandExecutor {
 
 		PwnFilterPlugin.getInstance().configurePlugin();
 
-		LogManager.info("Reloaded config.yml as requested by " + src.getName());
+		LogManager.info("Reloaded config.conf as requested by " + src.getName());
 
 		RuleManager.getInstance().reloadAllConfigs();
 		LogManager.info("All rules reloaded by " + src.getName());

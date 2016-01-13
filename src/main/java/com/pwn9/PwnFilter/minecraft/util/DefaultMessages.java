@@ -42,7 +42,7 @@ public class DefaultMessages {
         } else {
             result = message;
         }
-        return ChatColor.translateAlternateColorCodes('&',result);
+        return result;
     }
 
 }
