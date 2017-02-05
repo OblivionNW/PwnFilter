@@ -70,7 +70,7 @@ import java.util.stream.Collectors;
 // TODO: It's powerful.  Now, make it easier.
 // TODO: Make 'base' files that users can pull in to get started quickly (eg: swearing.txt, hate.txt, etc.)
 // TODO: Multiverse-support? (Different configs for different worlds)
-@Plugin(name = "PwnFilter", id = "pwnfilter", version = "1.0")
+@Plugin(name = "PwnFilter", id = "pwnfilter", version = "3.5.0")
 public class PwnFilterPlugin {
 
     private static PwnFilterPlugin _instance;

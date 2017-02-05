@@ -12,20 +12,16 @@ package com.pwn9.PwnFilter.minecraft.listener;
 
 import com.pwn9.PwnFilter.FilterTask;
 import com.pwn9.PwnFilter.config.SpongeConfig;
-import com.pwn9.PwnFilter.helpers.ChatColor;
 import com.pwn9.PwnFilter.minecraft.PwnFilterPlugin;
 import com.pwn9.PwnFilter.minecraft.api.MinecraftPlayer;
 import com.pwn9.PwnFilter.minecraft.util.ColoredString;
 import com.pwn9.PwnFilter.rules.RuleManager;
-import com.pwn9.PwnFilter.util.EnhancedString;
 import com.pwn9.PwnFilter.util.LogManager;
-import com.pwn9.PwnFilter.util.SimpleString;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.EventListener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.message.MessageChannelEvent;
-import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.Optional;
@@ -77,7 +73,7 @@ public class PwnFilterPlayerListener extends BaseListener implements EventListen
         // Permissions Check, if player has bypass permissions, then skip everything.
         if (bukkitPlayer.hasPermission("pwnfilter.bypass.chat")) return;
 
-        String message = TextSerializers.FORMATTING_CODE.serialize(event.getMessage().get());
+        String message = TextSerializers.FORMATTING_CODE.serialize(event.getMessage());
         //String message = Text.legacy().to(event.getMessage());
 
         // Global mute

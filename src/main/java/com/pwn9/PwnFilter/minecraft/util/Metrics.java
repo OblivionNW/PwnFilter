@@ -34,27 +34,15 @@ import org.spongepowered.api.Game;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import javax.inject.Inject;
+import java.io.*;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
-
-import javax.inject.Inject;
 
 public class Metrics {
 
@@ -337,7 +325,7 @@ public class Metrics {
         // Server software specific section
         String pluginName = plugin.getName();
         boolean onlineMode = game.getServer().getOnlineMode(); // TRUE if online mode is enabled
-        String pluginVersion = plugin.getVersion();
+        String pluginVersion = plugin.getVersion().orElse("3.5.0");
         // TODO no visible way to get MC version at the moment
         // TODO added by game.getPlatform().getMinecraftVersion() -- impl in 2.1
         String serverVersion = String.format("%s %s", "Sponge", game.getPlatform().getApi().getVersion());

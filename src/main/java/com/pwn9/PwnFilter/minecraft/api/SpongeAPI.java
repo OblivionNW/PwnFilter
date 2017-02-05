@@ -17,6 +17,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
 import org.spongepowered.api.service.economy.transaction.ResultType;
 import org.spongepowered.api.service.economy.transaction.TransactionResult;
@@ -144,10 +145,10 @@ public class SpongeAPI implements MinecraftAPI {
         if (PwnFilterPlugin.economy != null) {
             Optional<Player> player = Sponge.getGame().getServer().getPlayer(uuid);
             if (player.isPresent()) {
-                Optional<UniqueAccount> account = PwnFilterPlugin.economy.getAccount(uuid);
+                Optional<UniqueAccount> account = PwnFilterPlugin.economy.getOrCreateAccount(uuid);
                 if (account.isPresent()) {
                     TransactionResult transactionResult = account.get()
-                            .withdraw(PwnFilterPlugin.economy.getDefaultCurrency(), new BigDecimal(amount), Cause.of(PwnFilterPlugin.getInstance()));
+                            .withdraw(PwnFilterPlugin.economy.getDefaultCurrency(), new BigDecimal(amount), Cause.of(NamedCause.source(PwnFilterPlugin.getInstance())));
                     player.get().sendMessage(Text.of(messageString));
                     return transactionResult.getResult() == ResultType.SUCCESS;
                 }
